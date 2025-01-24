@@ -3,11 +3,11 @@ function init() {
     delete this.name
 }
 
-function hide() {
+function disable() {
     this.hidden = true
     this.paused = true
     this.disabled = true
-    if (this.onHide) this.onHide()
+    if (this.onDisable) this.onDisable()
     /*
     if (this.control) {
         lab.control.global.release(this.control)
@@ -15,11 +15,11 @@ function hide() {
     */
 }
 
-function show() {
+function enable() {
     this.hidden = false
     this.paused = false
     this.disabled = false
-    if (this.onShow) this.onShow()
+    if (this.onEnable) this.onEnable()
     /*
     if (this.control) {
         lab.control.global.capture(this.control)
