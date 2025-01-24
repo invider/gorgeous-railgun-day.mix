@@ -4,5 +4,5 @@ const hiLabel = {
     ry:  .5,
     font:  env.style.font.title.head,
     color: env.style.color.title,
-    text: 'TEST',
+    text: 'ST29',
 }

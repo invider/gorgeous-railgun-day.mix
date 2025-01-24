@@ -54,7 +54,7 @@ function switchTo(name, force) {
     disableAll()
 
     env.state = name
-    env.subState = name
+    env.transition = 'none'
     log(`=== ${name} state ===`)
     nextState.enable()
 }
@@ -65,8 +65,8 @@ function transitTo(name, st) {
         throw `Can't transit to unknown state: [${name}]`
     }
 
-    env.subState = env.state + ' -> ' + name
-    log(`transiting ${env.subState}`)
+    env.transition = env.state + ' -> ' + name
+    log(`transiting ${env.transition}`)
 
     const ts = {
         fadein:  2,
