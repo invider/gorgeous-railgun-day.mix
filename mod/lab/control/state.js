@@ -47,11 +47,11 @@ function switchTo(name, force) {
     if (!nextState) throw `Can't switch to unknown state: [${name}]`
 
     disableAll()
-    nextState.enable()
 
     env.state = name
     env.subState = name
     log(`=== ${name} state ===`)
+    nextState.enable()
 }
 
 function transitTo(name, st) {
