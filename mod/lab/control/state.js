@@ -21,6 +21,11 @@ function include(state) {
     state.disable()
 }
 
+function includeAll(states) {
+    if (!states || !isArray(states)) throw `Array of states is expected!`
+    states.forEach(state => include(state))
+}
+
 function setup() {
     // include all in /lab/state by default if present
     if (lab.state) lab.state._ls.forEach(state => {
