@@ -1,2 +1,5 @@
-# gorgeous-railgun-day.mix
-a game jam entry prototype
+
+# Gorgeous Railgun Day
+
+_A Pirate Software Game Jam 16 Entry_
+
