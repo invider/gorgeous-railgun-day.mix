@@ -1,16 +1,16 @@
-function hidePond() {
-    lab.pond.hide()
+function hidePort() {
+    lab.port.hide()
 }
 
-function showPond() {
-    lab.pond.show()
+function showPort() {
+    lab.port.show()
 }
 
 function hideAllExcept(name) {
-    if (name !== 'pond') hidePond()
-    lab.screen._ls.forEach( screen => {
-        if (screen.name !== name && screen.hide) {
-            screen.hide()
+    if (name !== 'port') hidePort()
+    lab.state._ls.forEach( state => {
+        if (state.name !== name && state.hide) {
+            state.hide()
         }
     })
 }
@@ -20,19 +20,19 @@ function hideAll() {
 }
 
 function switchTo(name, st) {
-    if (name === 'pond') {
-        hideAllExcept('pond')
-        showPond()
+    if (name === 'port') {
+        hideAllExcept('port')
+        showPort()
     } else {
         hideAllExcept(name)
-        lab.screen[name].show()
+        lab.state[name].show()
     }
-    env.screen = name
+    env.state = name
 }
 
 function transitTo(name, st) {
-    if (name !== 'pond' && !lab.screen[name]) {
-        throw `can't transit to unknown screen [${name}]`
+    if (name !== 'port' && !lab.state[name]) {
+        throw `can't transit to unknown state [${name}]`
     }
     log(`fading to [${name}]`)
 
