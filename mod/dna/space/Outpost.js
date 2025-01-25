@@ -63,9 +63,6 @@ class Outpost extends LabFrame {
                 y: y,
             }
         }))
-
-        this.mountRailgun()
-        this.mountRailgun()
     }
 
     mountRailgun() {

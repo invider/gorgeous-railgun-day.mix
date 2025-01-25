@@ -39,10 +39,23 @@ class Railgun {
         if (this.aim >= TAU) this.aim -= TAU
     }
 
+    shot() {
+        const { x, y, r2, aim } = this
+        const dx = cos(aim),
+              dy = sin(aim)
+
+        lab.port.spawn( dna.space.Projectile, {
+            x: this.x + dx * r2,
+            y: this.y + dy * r2,
+            dir: aim,
+        })
+    }
+
     activate(action) {
         switch(action.name) {
             case 'A':
             case 'B':
+                this.shot()
                 break
         }
     }
