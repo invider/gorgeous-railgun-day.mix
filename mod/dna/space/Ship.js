@@ -52,11 +52,20 @@ class Ship extends LabFrame {
     }
 
     pick(x, y, ls) {
+        if (this.dead) return
+
         const lxy = this.lxy(x, y)
         const dist = math.length( lxy[0], lxy[1] )
         if (dist <= this.r) {
             ls.push(this)
             return this
+        }
+    }
+
+    hit(source) {
+        this.hull -= source.force
+        if (this.hull <= 0) {
+            kill(this)
         }
     }
 
