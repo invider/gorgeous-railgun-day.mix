@@ -5,4 +5,5 @@ function capture(action) {
     const railgun = lab.port.outpost.mountRailgun()
 
     lab.monitor.controller.bind(action.controllerId, railgun)
+    lab.monitor.controller.act(action)
 }
