@@ -80,7 +80,7 @@ class Outpost extends LabFrame {
               gy  = x + dy * R
 
         const railguns = this._ls.filter(e => e instanceof dna.space.Railgun).length
-        this.attach( new dna.space.Railgun({
+        const railgun = new dna.space.Railgun({
             name: 'gun' + (railguns + 1),
             x: gx,
             y: gy,
@@ -90,7 +90,10 @@ class Outpost extends LabFrame {
                 x: mx,
                 y: my,
             }
-        }))
+        })
+        this.attach(railgun)
+
+        return railgun
     }
 
     evo(dt) {}
