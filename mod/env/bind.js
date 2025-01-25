@@ -67,7 +67,7 @@ const fixed = {
 const keyboardControllersMapping = [
     // quaker
     [ 'KeyW', 'KeyA', 'KeyS', 'KeyD',
-        'Space', 'AltLeft', 'KeyE', 'KeyQ',
+        'KeyV', 'KeyB', 'KeyE', 'KeyQ',
         'KeyR', 'KeyF', 'KeyT', 'KeyG',
     ],
     // arrower
@@ -77,7 +77,7 @@ const keyboardControllersMapping = [
     ],
     // vimer
     [ 'KeyK', 'KeyH', 'KeyJ', 'KeyL',
-        'KeyN', 'KeyB', 'KeyY', 'KeyU',
+        'KeyM', 'KeyN', 'KeyY', 'KeyU',
         '', '', '', '',
     ],
     // numpader

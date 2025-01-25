@@ -19,14 +19,16 @@ class Railgun {
     draw() {
         const { x, y, dx, dy, r, r2, aim, mount } = this
         const bx = cos(aim),
-              by = sin(aim)
+              by = sin(aim),
+              color = hsl(.7, .7, .6),
+              gcolor = hsl(.7, .7, .6)
 
         // body
-        neon.circle(x, y, r, hsl(.4, .5, .5), hsl(.5, .6, .6))
+        neon.circle(x, y, r, color, gcolor)
         // connector 
-        neon.line(x + dx*r, y + dy*r, mount.x, mount.y, hsl(.4, .5, .5), hsl(.5, .6, .6))
+        neon.line(x + dx*r, y + dy*r, mount.x, mount.y, color, gcolor)
         // barrel
-        neon.line(x, y, x + bx*r2, y + by*r2, hsl(.4, .5, .5), hsl(.5, .6, .6))
+        neon.line(x, y, x + bx*r2, y + by*r2, color, gcolor)
     }
 
     turnLeft(dt) {
@@ -45,6 +47,7 @@ class Railgun {
               dy = sin(aim)
 
         lab.port.spawn( dna.space.Projectile, {
+            team: this.team,
             x: this.x + dx * r2,
             y: this.y + dy * r2,
             dir: aim,
