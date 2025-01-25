@@ -4,7 +4,7 @@ class Dock {
         extend(this, {
             x: 0,
             y: 0,
-            r: 8,
+            r: 10,
 
             mount: {
                 x: 0,

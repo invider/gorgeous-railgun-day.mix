@@ -14,7 +14,7 @@ class Outpost extends LabFrame {
 
     init() {
         const {x, y, r} = this
-        const R = r * 1.8
+        const R = r * 1.7
 
         this.attach( new dna.space.Dock({
             name: 'dock1',
@@ -61,6 +61,34 @@ class Outpost extends LabFrame {
             mount: {
                 x: x - r,
                 y: y,
+            }
+        }))
+
+        this.mountRailgun()
+        this.mountRailgun()
+    }
+
+    mountRailgun() {
+        const { x, y, r } = this
+        const R = r * 2.5,
+              dir = math.rndfi(),
+              dx  = cos(dir),
+              dy  = sin(dir),
+              mx  = x + dx * r,
+              my  = y + dy * r,
+              gx  = x + dx * R,
+              gy  = x + dy * R
+
+        const railguns = this._ls.filter(e => e instanceof dna.space.Railgun).length
+        this.attach( new dna.space.Railgun({
+            name: 'gun' + (railguns + 1),
+            x: gx,
+            y: gy,
+            dx: -dx,
+            dy: -dy,
+            mount: {
+                x: mx,
+                y: my,
             }
         }))
     }
