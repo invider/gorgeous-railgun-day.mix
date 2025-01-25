@@ -7,6 +7,7 @@ function sector() {
         lab.port.spawn( dna.space.Ship, {
             x: RND(rx(1) * .8) - rx(.5) * .8,
             y: RND(ry(1) * .8) - ry(.5) * .8,
+            turnSpeed: .1 + rnd(PI),
         })
     }
 }
