@@ -9,6 +9,7 @@ class Ship extends Unit {
         super( extend({
             debug: true,
             team:  0,
+            scanned: true,
             name: 'ship' + (++id),
             x:     0,
             y:     0,
@@ -63,12 +64,13 @@ class Ship extends Unit {
         save()
         rotate(dir)
 
-        let c = hsl(.7, .7, .6)
+        let bc = env.style.teamColor(this),
+            gc = env.style.teamGlow(this)
 
-        neon.line( 0,    -r,     .7*r,   r,      c, c)
-        neon.line( .7*r, r,      0,      .7*r,   c, c)
-        neon.line( 0,    .7*r,   -.7*r,  r,      c, c)
-        neon.line( -.7*r,r,      0,      -r,     c, c)
+        neon.line( 0,    -r,     .7*r,   r,      bc, gc)
+        neon.line( .7*r, r,      0,      .7*r,   bc, gc)
+        neon.line( 0,    .7*r,   -.7*r,  r,      bc, gc)
+        neon.line( -.7*r,r,      0,      -r,     bc, gc)
 
         super.draw()
         restore()
@@ -86,7 +88,7 @@ class Ship extends Unit {
     }   
 
     getStatus() {
-        return `[${this.name}] HULL:${floor(this.hull)}/${this.maxHull}`
+        return `[${this.name}.${this.team}] HULL:${floor(this.hull)}/${this.maxHull}`
     }
 
 }
