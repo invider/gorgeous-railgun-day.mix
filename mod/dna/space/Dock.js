@@ -2,6 +2,7 @@ class Dock {
 
     constructor(st) {
         extend(this, {
+            scanned: true,
             x: 0,
             y: 0,
             r: 10,
@@ -19,7 +20,10 @@ class Dock {
 
     draw() {
         const { x, y, dx, dy, r, mount } = this
-        neon.circle(x, y, r, hsl(.4, .5, .5), hsl(.5, .6, .6))
-        neon.line(x + dx*r, y + dy*r, mount.x, mount.y, hsl(.4, .5, .5), hsl(.5, .6, .6))
+        let bc = env.style.teamColor(this),
+            gc = env.style.teamGlow(this)
+
+        neon.circle(x, y, r, bc, gc)
+        neon.line(x + dx*r, y + dy*r, mount.x, mount.y, bc, gc)
     }
 }

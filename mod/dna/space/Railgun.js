@@ -2,10 +2,12 @@ class Railgun {
 
     constructor(st) {
         extend(this, {
-            x:   0,
-            y:   0,
-            r:   10,
-            r2:  15,
+            scanned: true,
+            team: 0,
+            x:    0,
+            y:    0,
+            r:    10,
+            r2:   15,
             aim: math.rndfi(),
             turnSpeed: PI,
 
@@ -20,8 +22,8 @@ class Railgun {
         const { x, y, dx, dy, r, r2, aim, mount } = this
         const bx = cos(aim),
               by = sin(aim),
-              color = hsl(.7, .7, .6),
-              gcolor = hsl(.7, .7, .6)
+              color = env.style.teamColor(this),
+              gcolor = env.style.teamGlow(this)
 
         // body
         neon.circle(x, y, r, color, gcolor)

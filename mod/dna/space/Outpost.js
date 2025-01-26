@@ -3,6 +3,7 @@ class Outpost extends LabFrame {
     constructor(st) {
         super(
             extend({
+                scanned: true,
                 name: 'outpost',
                 team: 1,
                 x:    0,
@@ -79,6 +80,7 @@ class Outpost extends LabFrame {
         const railguns = this._ls.filter(e => e instanceof dna.space.Railgun).length
         const railgun = new dna.space.Railgun({
             name: 'gun' + (railguns + 1),
+            team: 2,
             x: gx,
             y: gy,
             dx: -dx,
@@ -96,7 +98,10 @@ class Outpost extends LabFrame {
     evo(dt) {}
 
     draw() {
-        neon.circle(this.x, this.y, this.r, hsl(.4, .5, .5), hsl(.5, .6, .6))
+        let bc = env.style.teamColor(this),
+            gc = env.style.teamGlow(this)
+
+        neon.circle(this.x, this.y, this.r, bc, gc)
         super.draw()
     }
 }
