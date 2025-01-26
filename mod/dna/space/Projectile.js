@@ -1,17 +1,26 @@
 
 let id = 0
 
-class Projectile {
+const Unit = require('dna/space/Unit')
+
+class Projectile extends Unit {
 
     constructor(st) {
-        extend(this, {
-            solid: true,
-            name:  'projectile' + (++id),
-            r:     5,
-            dir:   0,
+        super( extend({
+            name:     'projectile' + (++id),
+            r:        5,
+            dir:      0,
             lifespan: 5,
             speed:    200,
-        }, st)
+            force:    20,
+        }, st) )
+
+        this.attach( new dna.space.pod.Solid({
+            x: 0,
+            y: 0,
+            r: 2.5,
+        }))
+
     }
 
     pos() {
@@ -23,6 +32,8 @@ class Projectile {
     }
 
     evo(dt) {
+        super.evo(dt)
+
         this.x += Math.cos(this.dir) * this.speed * dt
         this.y += Math.sin(this.dir) * this.speed * dt
 
@@ -50,6 +61,8 @@ class Projectile {
         line(0, -this.r, 0, this.r)
         */
         neon.line(0, -this.r, 0, this.r, c, c)
+
+        super.draw()
 
         restore()
     }

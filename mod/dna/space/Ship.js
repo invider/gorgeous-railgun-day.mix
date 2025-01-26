@@ -1,7 +1,9 @@
 
 let id = 0
 
-class Ship extends LabFrame {
+const Unit = require('dna/space/Unit')
+
+class Ship extends Unit {
 
     constructor(st) {
         super( extend({
@@ -31,45 +33,25 @@ class Ship extends LabFrame {
         }))
     }
 
-    lxy(gx, gy) {
-        const cdir = -this.dir,
-              lx = gx - this.x,
-              ly = gy - this.y
-        return [
-            lx * (cos(cdir) - sin(cdir)),
-            ly * (sin(cdir) + cos(cdir)),
-        ]
-    }
-
-    gxy(lx, ly) {
-        const { x, y, dir } = this
-        const gx = lx * (cos(dir) - sin(dir)),
-              gy = ly * (sin(dir) + cos(dir))
-        return [
-            x + gx,
-            y + gy,
-        ]
-    }
-
-    pick(x, y, ls) {
-        if (this.dead) return
-
-        const lxy = this.lxy(x, y)
-        const dist = math.length( lxy[0], lxy[1] )
-        if (dist <= this.r) {
-            ls.push(this)
-            return this
-        }
-    }
-
-    hit(source) {
-        this.hull -= source.force
+    damage(force) {
+        this.hull -= force
         if (this.hull <= 0) {
             kill(this)
         }
     }
 
+    hit(source) {
+        if (source.force) {
+            if (source.source !== this && source.team !== this.team) {
+                this.damage(source.force)
+                kill(source)
+            }
+        }
+    }
+
     evo(dt) {
+        super.evo(dt)
+
         this.dir += math.normalizeAngle(this.turnSpeed * dt)
     }
 
@@ -79,7 +61,7 @@ class Ship extends LabFrame {
         translate(x, y)
 
         save()
-        rotate(HALF_PI + dir)
+        rotate(dir)
 
         let c = hsl(.7, .7, .6)
 
