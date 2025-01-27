@@ -1,9 +1,9 @@
 
 let id = 0
 
-const Unit = require('dna/space/Unit')
+const Platform = require('dna/space/Platform')
 
-class Ship extends Unit {
+class Ship extends Platform {
 
     constructor(st) {
         super( extend({
@@ -22,12 +22,13 @@ class Ship extends Unit {
             maxSpeed:     100,
             acceleration: 10,
             maxHull:      100,
-            turnSpeed:    0,
 
             status: '',
         }, st) )
 
-        this.attach( new dna.space.pod.Solid({
+        this.install( new dna.space.pod.Friction() )
+
+        this.install( new dna.space.pod.Solid({
             x: 0,
             y: 0,
             r: 15,
@@ -52,8 +53,6 @@ class Ship extends Unit {
 
     evo(dt) {
         super.evo(dt)
-
-        this.dir += math.normalizeAngle(this.turnSpeed * dt)
     }
 
     draw() {
@@ -62,7 +61,7 @@ class Ship extends Unit {
         translate(x, y)
 
         save()
-        rotate(dir)
+        rotate(HALF_PI + dir)
 
         let bc = env.style.teamColor(this),
             gc = env.style.teamGlow(this)

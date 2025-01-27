@@ -7,7 +7,13 @@ function sector() {
             team: lib.source.traffic.rndi( env.style.teams.length ),
             x: lib.source.traffic.rndi(rx(1) * .8) - rx(.5) * .8,
             y: lib.source.traffic.rndi(ry(1) * .8) - ry(.5) * .8,
-            turnSpeed: .1 + lib.source.traffic.rndf() * PI,
+            //turnSpeed: .1 + lib.source.traffic.rndf() * PI,
+
+            pods: [
+                new dna.space.pod.AutoRotateControl({
+                    turnSpeed: lib.source.traffic.rnds() * (.2 + lib.source.traffic.rndf() * PI),
+                }),
+            ]
         })
     }
 }

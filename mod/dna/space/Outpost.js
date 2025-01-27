@@ -1,4 +1,6 @@
-class Outpost extends LabFrame {
+const Platform = require('dna/space/Platform')
+
+class Outpost extends Platform {
 
     constructor(st) {
         super(

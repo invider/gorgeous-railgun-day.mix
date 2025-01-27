@@ -6,4 +6,6 @@ function capture(action) {
 
     lab.monitor.controller.bind(action.controllerId, railgun)
     lab.monitor.controller.act(action)
+
+    if (!env.leadControllerId) env.leadControllerId = action.controllerId
 }

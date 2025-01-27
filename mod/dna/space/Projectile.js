@@ -1,9 +1,8 @@
-
 let id = 0
 
-const Unit = require('dna/space/Unit')
+const Platform = require('dna/space/Platform')
 
-class Projectile extends Unit {
+class Projectile extends Platform {
 
     constructor(st) {
         super( extend({
@@ -34,8 +33,8 @@ class Projectile extends Unit {
     evo(dt) {
         super.evo(dt)
 
-        this.x += Math.cos(this.dir) * this.speed * dt
-        this.y += Math.sin(this.dir) * this.speed * dt
+        //this.x += Math.cos(this.dir) * this.speed * dt
+        //this.y += Math.sin(this.dir) * this.speed * dt
 
         this.lifespan -= dt
         if (this.lifespan < 0) {
