@@ -1,6 +1,6 @@
 # wave 1
 > camera area zoom-in
-> ship movements
+> targeting pod with a proximity sensor(?)
 > ship navigation (waypoints)
 > ship attacks 
 > rotating outpost
@@ -19,3 +19,4 @@
 > scan ray
 > secondary weapons
 
+V ship movements

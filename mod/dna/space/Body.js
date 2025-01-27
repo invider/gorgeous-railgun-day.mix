@@ -57,11 +57,11 @@ class Body extends LabFrame {
         // run pre-install procedures
         if (isFun(pod.preInstall)) pod.preInstall(this)
 
-        // remove the previous pod if present
+        // uninstall the previous pod if present
         const prevPod = this[alias]
         if (prevPod) {
             if (isFun(prevPod.onReplace)) prevPod.onReplace(pod)
-            this.remove(prevPod)
+            this.uninstall(prevPod)
         }
 
         // install a new one
@@ -70,7 +70,7 @@ class Body extends LabFrame {
         if (isFun(pod.onInstall)) pod.onInstall()
     }
 
-    remove(pod) {
+    uninstall(pod) {
         if (!pod) return false
         
         if (isString(pod)) {
@@ -79,7 +79,7 @@ class Body extends LabFrame {
             pod = podEntity
         }
 
-        if (isFun(pod.onRemove)) pod.onRemove()
+        if (isFun(pod.onUninstall)) pod.onUninstall()
         this.detach(pod)
         if (pod.alias && pod.alias !== pod.name) {
             delete this[pod.alias]
