@@ -25,12 +25,25 @@ class Railgun {
               color = env.style.teamColor(this),
               gcolor = env.style.teamGlow(this)
 
-        // body
-        neon.circle(x, y, r, color, gcolor)
         // connector 
         neon.line(x + dx*r, y + dy*r, mount.x, mount.y, color, gcolor)
+
+        save()
+        translate(x, y)
+        rotate(HALF_PI + aim)
+
+        // body
+        //neon.circle(0, 0, r, color, gcolor)
+        neon.line( 1.1*r,    -r,     .7*r,   r,      color, gcolor)
+        neon.line( .7*r, r,      0,      .7*r,   color, gcolor)
+        neon.line( 0,    .7*r,   -.7*r,  r,      color, gcolor)
+        neon.line( -.7*r,r,      -1.1*r,      -r,     color, gcolor)
+
         // barrel
-        neon.line(x, y, x + bx*r2, y + by*r2, color, gcolor)
+        neon.line(0, 0, 0, -r * 1.4, color, gcolor)
+
+
+        restore()
     }
 
     turnLeft(dt) {
