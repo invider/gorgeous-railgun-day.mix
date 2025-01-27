@@ -1,4 +1,4 @@
-function click(e) {
+function dblClick(e) {
     const ls = []
     const last = lab.port.pick( e.x, e.y, ls )
 
@@ -9,6 +9,6 @@ function click(e) {
     })
 
     if (platform) {
-        lab.control.tower.selectPlatform(platform)
+        lab.control.tower.capturePlatform(platform)
     }
 }

@@ -1,3 +1,13 @@
+function selectPlatform(platform) {
+    if (!platform || !(platform instanceof dna.space.Platform)) return false
+
+    if (env.selected) {
+        env.selected.selected = false
+    }
+    platform.selected = true
+    env.selected = platform
+}
+
 function capturePlatform(platform) {
     if (!platform || !(platform instanceof dna.space.Platform) || !env.leadControllerId) return false
 
@@ -15,4 +25,3 @@ function capturePlatform(platform) {
 
     return true
 }
-

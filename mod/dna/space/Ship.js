@@ -76,7 +76,9 @@ class Ship extends Platform {
 
         // debug info
         if (this.debug) {
-            const label = this.status? this.name + ': ' + this.status : this.name
+            let label = this.status? this.name + ': ' + this.status : this.name
+            if (this.selected) label = '[' + label + ']'
+            if (this.padControl && this.padControl._controllerId) label = '== ' + label + ' =='
             fill(rgb(1, 1, 1))
             font(env.style.font.main.head)
             baseTop()
