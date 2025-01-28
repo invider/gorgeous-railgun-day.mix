@@ -11,9 +11,9 @@ class Targeting {
     setTarget(target) {
         this.target = target
         if (env.traceTargeting || env.config.traceTargeting) {
-            if (!target) log(`[${this.__.name}] no target`)
-            else if (!target.name) log(`[${this.__.name}] -> target [annonymous]`)
-            else log(`[${this.__.name}] -> target [${target.name}]`)
+            if (!target) log(`[${this.__.name}] => no target`)
+            else if (!target.name) log(`[${this.__.name}] => [annonymous@${round(target.x)}:${round(target.y)}]`)
+            else log(`[${this.__.name}] => [${target.name}@${round(target.x)}:${round(target.y)}]`)
         }
     }
 

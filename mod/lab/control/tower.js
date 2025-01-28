@@ -37,7 +37,7 @@ function capturePlatform(platform) {
     return true
 }
 
-function targetPlatform(source, target) {
+function target(source, target) {
     if (!source || !source.targeting || !target) return
     source.targeting.setTarget(target)
 }
