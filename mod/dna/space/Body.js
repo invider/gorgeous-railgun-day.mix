@@ -7,12 +7,10 @@ class Body extends LabFrame {
             r:     1,
             dir:   0,
             mass:  100,
-            speed: 0,
         }, st) )
 
         // install pods
         const body = this
-        body.install( new dna.space.pod.Mover() )
         if (isArray(this.pods)) {
             this.pods.forEach(pod => body.install(pod))
         }
@@ -50,6 +48,14 @@ class Body extends LabFrame {
     }
 
     install(pod) {
+        if (isArray(pod)) {
+            for (let i = 0; i < pod.length; i++) {
+                const p = pod[i]
+                this.install(p)
+            }
+            return
+        }
+
         // determine the install alias
         const name  = pod.name
         const alias = pod.alias || pod.name

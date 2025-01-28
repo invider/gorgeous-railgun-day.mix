@@ -7,7 +7,6 @@ class Platform extends Body {
         super( extend({
             hull: 100,
         }, st) )
-        this.install( new dna.space.pod.Attitude() )
     }
 
     damage(force) {

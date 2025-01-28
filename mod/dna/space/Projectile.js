@@ -8,17 +8,22 @@ class Projectile extends Platform {
         super( extend({
             name:     'projectile' + (++id),
             r:        5,
-            dir:      0,
             lifespan: 5,
             speed:    200,
             force:    20,
         }, st) )
 
-        this.install( new dna.space.pod.Solid({
-            x: 0,
-            y: 0,
-            r: 2.5,
-        }))
+        this.install([
+            new dna.space.pod.Solid({
+                x: 0,
+                y: 0,
+                r: 2.5,
+            }),
+            new dna.space.pod.Attitude(),
+            new dna.space.pod.Thruster({
+                speed: 100,
+            }),
+        ])
 
     }
 

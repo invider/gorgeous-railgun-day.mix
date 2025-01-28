@@ -19,10 +19,10 @@ class PadControl {
                 this.__.attitude.right(dt)
                 break
             case 'UP':
-                this.__.attitude.forward(dt)
+                this.__.thruster.forward(dt)
                 break
             case 'DOWN':
-                this.__.attitude.backward(dt)
+                this.__.thruster.backward(dt)
                 break
         }
     }

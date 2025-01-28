@@ -14,8 +14,6 @@ class Ship extends Platform {
             x:     0,
             y:     0,
             r:     15,
-            dir:   0,
-            speed: 0,
             hull:  50,
 
             // stats
@@ -26,15 +24,17 @@ class Ship extends Platform {
             status: '',
         }, st) )
 
-        this.install( new dna.space.pod.Friction() )
-
-        this.install( new dna.space.pod.Solid({
-            x: 0,
-            y: 0,
-            r: 15,
-        }))
-
-        this.install( new dna.space.pod.Targeting() )
+        this.install([
+            new dna.space.pod.Solid({
+                x: 0,
+                y: 0,
+                r: 15,
+            }),
+            new dna.space.pod.Attitude(),
+            new dna.space.pod.Thruster(),
+            new dna.space.pod.Friction(),
+            new dna.space.pod.Targeting(),
+        ])
     }
 
     evo(dt) {
