@@ -1,12 +1,5 @@
 function dblClick(e) {
-    const ls = []
-    const last = lab.port.pick( e.x, e.y, ls )
-
-    let platform = null
-    ls.forEach(e => {
-        console.dir(e)
-        if (e instanceof dna.space.Platform) platform = e
-    })
+    const platform = lab.control.tower.platformAt(e.x, e.y)
 
     if (platform) {
         lab.control.tower.capturePlatform(platform)

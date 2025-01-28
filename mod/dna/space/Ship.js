@@ -33,6 +33,8 @@ class Ship extends Platform {
             y: 0,
             r: 15,
         }))
+
+        this.install( new dna.space.pod.Targeting() )
     }
 
     evo(dt) {

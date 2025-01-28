@@ -1,3 +1,14 @@
+function platformAt(x, y) {
+    const ls = []
+    const last = lab.port.pick( x, y, ls )
+
+    let platform = null
+    ls.forEach(e => {
+        if (e instanceof dna.space.Platform) platform = e
+    })
+    return platform
+}
+
 function selectPlatform(platform) {
     if (!platform || !(platform instanceof dna.space.Platform)) return false
 
@@ -24,4 +35,9 @@ function capturePlatform(platform) {
     lab.monitor.controller.bind(env.leadControllerId, platform.padControl)
 
     return true
+}
+
+function targetPlatform(source, target) {
+    if (!source || !source.targeting || !target) return
+    source.targeting.setTarget(target)
 }
