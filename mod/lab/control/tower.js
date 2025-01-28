@@ -39,5 +39,9 @@ function capturePlatform(platform) {
 
 function target(source, target) {
     if (!source || !source.targeting || !target) return
-    source.targeting.setTarget(target)
+    const updated = source.targeting.setTarget(target)
+    if (!updated) {
+        // it is the same target - just change the attitude mode
+        source.targeting.switchAttitude()
+    }
 }

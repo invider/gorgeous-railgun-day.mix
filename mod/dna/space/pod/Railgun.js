@@ -2,9 +2,10 @@ class Railgun {
 
     constructor(st) {
         extend(this, {
-            type:  'weapon',
-            name:  'railgun',
-            alias: 'primaryWeapon',
+            type:    'pod',
+            subtype: 'weapon',
+            name:    'railgun',
+            alias:   'primaryWeapon',
         }, st)
     }
 

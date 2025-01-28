@@ -2,6 +2,7 @@ class Friction {
 
     constructor(st) {
         extend(this, {
+            type:   'pod',
             name:   'friction',
             amount: 10,
         }, st)

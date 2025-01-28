@@ -2,6 +2,7 @@ class MultiSolid {
 
     constructor(st) {
         extend(this, {
+            type:      'pod',
             name:      'multiSolid',
             alias:     'solid',
             noContact: true,

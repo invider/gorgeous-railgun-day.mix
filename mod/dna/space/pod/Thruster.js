@@ -2,7 +2,9 @@ class Thruster {
 
     constructor(st) {
         extend(this, {
-            name: 'thruster',
+            type:    'solid',
+            subtype: 'propulsion',
+            name:    'thruster',
 
             speed:        0,
 

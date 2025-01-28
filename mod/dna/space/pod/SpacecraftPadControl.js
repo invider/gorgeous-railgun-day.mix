@@ -2,8 +2,10 @@ class SpacecraftPadControl {
 
     constructor(st) {
         extend(this, {
-            alias: 'control',
-            name:  'spacecraftPadControl',
+            type:    'pod',
+            subtype: 'control',
+            alias:   'control',
+            name:    'spacecraftPadControl',
         }, st)
     }
 

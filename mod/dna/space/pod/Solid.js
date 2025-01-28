@@ -1,11 +1,15 @@
+// solid circle
 class Solid {
 
     constructor(st) {
         extend(this, {
-            name: 'solid',
-            x: 0,
-            y: 0,
-            r: 10,
+            type:    'pod',
+            subtype: 'solid',
+            name:    'solid',
+
+            x:        0,
+            y:        0,
+            r:        10,
         }, st)
     }
 

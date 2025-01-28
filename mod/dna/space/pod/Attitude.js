@@ -7,7 +7,9 @@ class Attitude {
 
     constructor(st) {
         extend(this, {
-            name: 'attitude',
+            type:    'pod',
+            subtype: 'propulsion',
+            name:    'attitude',
 
             turnSpeed:    PI,
         }, st)
