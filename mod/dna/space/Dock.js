@@ -4,10 +4,11 @@ class Dock extends Platform {
 
     constructor(st) {
         super( extend({
+            type:   'module',
+            x:       0,
+            y:       0,
+            r:       10,
             scanned: true,
-            x: 0,
-            y: 0,
-            r: 10,
 
             mount: {
                 x: 0,

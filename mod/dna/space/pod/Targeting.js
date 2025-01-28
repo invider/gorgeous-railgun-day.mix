@@ -8,6 +8,10 @@ class Targeting {
         }, st)
     }
 
+    preInstall(body) {
+        if (!body.attitude) throw `an attitude pod is expected in [${body.name}]!`
+    }
+
     setTarget(target) {
         this.target = target
         if (env.traceTargeting || env.config.traceTargeting) {

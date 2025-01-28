@@ -1,10 +1,15 @@
-class PadControl {
+class SpacecraftPadControl {
 
     constructor(st) {
         extend(this, {
             alias: 'control',
-            name:  'padControl',
+            name:  'spacecraftPadControl',
         }, st)
+    }
+
+    preInstall(body) {
+        if (!body.attitude) throw `an attitude pod is expected in [${body.name}]!`
+        if (!body.thruster) throw `a thruster pod is expected in [${body.name}]!`
     }
 
     activate(action) {

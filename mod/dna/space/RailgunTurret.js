@@ -1,17 +1,20 @@
 
 const Platform = require('dna/space/Platform')
 
-class Railgun extends Platform {
+class RailgunTurret extends Platform {
 
     constructor(st) {
         super( extend({
+            type:   'turret',
+            team:    0,
+            x:       0,
+            y:       0,
+            r:       10,
+            r2:      8,
+            dir:     math.rndfi(),
             scanned: true,
-            team: 0,
-            x:    0,
-            y:    0,
-            r:    10,
-            r2:   8,
-            aim: math.rndfi(),
+
+            // specs
             turnSpeed: PI,
 
             mount: {
@@ -20,17 +23,22 @@ class Railgun extends Platform {
             },
         }, st) )
 
-        this.install( new dna.space.pod.Solid({
-            x: 0,
-            y: 0,
-            r: 15,
-        }))
+        this.install([
+            new dna.space.pod.Solid({
+                x: 0,
+                y: 0,
+                r: 15,
+            }),
+            new dna.space.pod.Attitude(),
+            new dna.space.pod.Railgun(),
+            new dna.space.pod.TurretPadControl(),
+        ])
     }
 
     draw() {
-        const { x, y, dx, dy, r, r2, aim, mount } = this
-        const bx = cos(aim),
-              by = sin(aim),
+        const { x, y, dx, dy, r, r2, dir, mount } = this
+        const bx = cos(dir),
+              by = sin(dir),
               color = env.style.teamColor(this),
               gcolor = env.style.teamGlow(this)
 
@@ -39,7 +47,7 @@ class Railgun extends Platform {
 
         save()
         translate(x, y)
-        rotate(HALF_PI + aim)
+        rotate(HALF_PI + dir)
 
         // body
         //neon.circle(0, 0, r, color, gcolor)
@@ -57,6 +65,7 @@ class Railgun extends Platform {
         restore()
     }
 
+    /*
     turnLeft(dt) {
         this.aim -= this.turnSpeed * dt
         if (this.aim < 0) this.aim += TAU
@@ -66,30 +75,9 @@ class Railgun extends Platform {
         this.aim += this.turnSpeed * dt
         if (this.aim >= TAU) this.aim -= TAU
     }
+    */
 
-    fire() {
-        const { x, y, r2, aim } = this
-        const dx = cos(aim),
-              dy = sin(aim)
-
-        lab.port.spawn( dna.space.Projectile, {
-            team:   this.team,
-            source: this,
-            x: this.x + dx * r2,
-            y: this.y + dy * r2,
-            dir: aim,
-        })
-    }
-
-    activate(action) {
-        switch(action.name) {
-            case 'A':
-            case 'B':
-                this.fire()
-                break
-        }
-    }
-
+    /*
     act(action, dt) {
         switch(action.name) {
             case 'LEFT':
@@ -100,5 +88,6 @@ class Railgun extends Platform {
                 break
         }
     }
+    */
 
 }

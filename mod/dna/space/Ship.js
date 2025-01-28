@@ -7,21 +7,23 @@ class Ship extends Platform {
 
     constructor(st) {
         super( extend({
-            debug: true,
-            team:  0,
+            team:    0,
+            type:   'spacecraft',
+            name:   'ship' + (++id),
+
+            x:       0,
+            y:       0,
+            r:       15,
+            hull:    50,
             scanned: true,
-            name: 'ship' + (++id),
-            x:     0,
-            y:     0,
-            r:     15,
-            hull:  50,
 
             // stats
             maxSpeed:     100,
             acceleration: 10,
             maxHull:      100,
 
-            status: '',
+            status:  '',
+            debug:   true,
         }, st) )
 
         this.install([

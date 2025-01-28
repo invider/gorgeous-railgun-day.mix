@@ -8,7 +8,7 @@ class Friction {
     }
 
     preInstall(body) {
-        if (!body.thruster) throw `thruster pod is expected in [${body.name}]!`
+        if (!body.thruster) throw `a thruster pod is expected in [${body.name}]!`
     }
 
     evo(dt) {

@@ -80,8 +80,8 @@ class Outpost extends MultiPlatform {
               gx  = x + dx * R,
               gy  = x + dy * R
 
-        const railguns = this._ls.filter(e => e instanceof dna.space.Railgun).length
-        const railgun = new dna.space.Railgun({
+        const railguns = this._ls.filter(e => e instanceof dna.space.RailgunTurret).length
+        const railgun = new dna.space.RailgunTurret({
             name: 'gun' + (railguns + 1),
             team: 2,
             x: gx,

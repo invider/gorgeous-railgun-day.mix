@@ -17,7 +17,7 @@ class Thruster {
     }
 
     preInstall(body) {
-        if (!body.attitude) throw `attitude pod is expected in [${body.name}]!`
+        if (!body.attitude) throw `an attitude pod is expected in [${body.name}]!`
     }
 
     forward(dt) {
