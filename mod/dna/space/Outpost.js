@@ -1,6 +1,6 @@
-const Platform = require('dna/space/Platform')
+const MultiPlatform = require('dna/space/MultiPlatform')
 
-class Outpost extends Platform {
+class Outpost extends MultiPlatform {
 
     constructor(st) {
         super(
@@ -13,6 +13,7 @@ class Outpost extends Platform {
                 r:    40,
             }, st)
         )
+        this.install( new dna.space.pod.MultiSolid() )
     }
 
     init() {

@@ -1,13 +1,16 @@
-class Railgun {
+
+const Platform = require('dna/space/Platform')
+
+class Railgun extends Platform {
 
     constructor(st) {
-        extend(this, {
+        super( extend({
             scanned: true,
             team: 0,
             x:    0,
             y:    0,
             r:    10,
-            r2:   15,
+            r2:   8,
             aim: math.rndfi(),
             turnSpeed: PI,
 
@@ -15,7 +18,13 @@ class Railgun {
                 x: 0,
                 y: 0,
             },
-        }, st)
+        }, st) )
+
+        this.install( new dna.space.pod.Solid({
+            x: 0,
+            y: 0,
+            r: 15,
+        }))
     }
 
     draw() {
@@ -42,6 +51,8 @@ class Railgun {
         // barrel
         neon.line(0, 0, 0, -r * 1.4, color, gcolor)
 
+        this.drawRadius()
+        super.draw()
 
         restore()
     }
@@ -56,13 +67,14 @@ class Railgun {
         if (this.aim >= TAU) this.aim -= TAU
     }
 
-    shot() {
+    fire() {
         const { x, y, r2, aim } = this
         const dx = cos(aim),
               dy = sin(aim)
 
         lab.port.spawn( dna.space.Projectile, {
-            team: this.team,
+            team:   this.team,
+            source: this,
             x: this.x + dx * r2,
             y: this.y + dy * r2,
             dir: aim,
@@ -73,7 +85,7 @@ class Railgun {
         switch(action.name) {
             case 'A':
             case 'B':
-                this.shot()
+                this.fire()
                 break
         }
     }

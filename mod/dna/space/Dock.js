@@ -1,7 +1,9 @@
-class Dock {
+const Platform = require('dna/space/Platform')
+
+class Dock extends Platform {
 
     constructor(st) {
-        extend(this, {
+        super( extend({
             scanned: true,
             x: 0,
             y: 0,
@@ -11,7 +13,13 @@ class Dock {
                 x: 0,
                 y: 0,
             },
-        }, st)
+        }, st) )
+
+        this.install( new dna.space.pod.Solid({
+            x: 0,
+            y: 0,
+            r: 15,
+        }))
     }
 
     init() {
@@ -23,7 +31,15 @@ class Dock {
         let bc = env.style.teamColor(this),
             gc = env.style.teamGlow(this)
 
-        neon.circle(x, y, r, bc, gc)
-        neon.line(x + dx*r, y + dy*r, mount.x, mount.y, bc, gc)
+        save()
+        translate(x, y)
+
+        neon.circle(0, 0, r, bc, gc)
+        neon.line(dx*r, dy*r, mount.x - x, mount.y - y, bc, gc)
+
+        this.drawRadius()
+        super.draw()
+
+        restore()
     }
 }

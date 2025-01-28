@@ -35,22 +35,6 @@ class Ship extends Platform {
         }))
     }
 
-    damage(force) {
-        this.hull -= force
-        if (this.hull <= 0) {
-            kill(this)
-        }
-    }
-
-    hit(source) {
-        if (source.force) {
-            if (source.source !== this && source.team !== this.team) {
-                this.damage(source.force)
-                kill(source)
-            }
-        }
-    }
-
     evo(dt) {
         super.evo(dt)
     }
@@ -71,8 +55,10 @@ class Ship extends Platform {
         neon.line( 0,    .7*r,   -.7*r,  r,      bc, gc)
         neon.line( -.7*r,r,      0,      -r,     bc, gc)
 
+        this.drawRadius()
         super.draw()
         restore()
+
 
         // debug info
         if (this.debug) {

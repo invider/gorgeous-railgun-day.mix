@@ -14,7 +14,7 @@ class Projectile extends Platform {
             force:    20,
         }, st) )
 
-        this.attach( new dna.space.pod.Solid({
+        this.install( new dna.space.pod.Solid({
             x: 0,
             y: 0,
             r: 2.5,

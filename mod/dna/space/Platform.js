@@ -1,10 +1,28 @@
+
 const Body = require('dna/space/Body')
 
 class Platform extends Body {
 
     constructor(st) {
-        super(st)
+        super( extend({
+            hull: 100,
+        }, st) )
         this.install( new dna.space.pod.Attitude() )
     }
 
+    damage(force) {
+        this.hull -= force
+        if (this.hull <= 0) {
+            kill(this)
+        }
+    }
+
+    hit(hitter) {
+        if (hitter.force) {
+            if (hitter.source !== this && (env.tune.friendlyFire || hitter.team !== this.team)) {
+                this.damage(hitter.force)
+                kill(hitter)
+            }
+        }
+    }
 }
