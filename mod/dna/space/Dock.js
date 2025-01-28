@@ -1,13 +1,18 @@
 const Platform = require('dna/space/Platform')
 
+let id = 0
+
 class Dock extends Platform {
 
     constructor(st) {
         super( extend({
             type:   'module',
+            name:   'dock' + (++id),
+
             x:       0,
             y:       0,
             r:       10,
+            hull:    100,
             scanned: true,
 
             mount: {

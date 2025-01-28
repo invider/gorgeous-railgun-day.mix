@@ -6,11 +6,10 @@ class RailgunTurret extends Platform {
     constructor(st) {
         super( extend({
             type:   'turret',
-            team:    0,
-            x:       0,
-            y:       0,
             r:       10,
             r2:      8,
+
+            hull:    100,
             dir:     math.rndfi(),
             scanned: true,
 
@@ -64,30 +63,4 @@ class RailgunTurret extends Platform {
 
         restore()
     }
-
-    /*
-    turnLeft(dt) {
-        this.aim -= this.turnSpeed * dt
-        if (this.aim < 0) this.aim += TAU
-    }
-
-    turnRight(dt) {
-        this.aim += this.turnSpeed * dt
-        if (this.aim >= TAU) this.aim -= TAU
-    }
-    */
-
-    /*
-    act(action, dt) {
-        switch(action.name) {
-            case 'LEFT':
-                this.turnLeft(dt)
-                break
-            case 'RIGHT':
-                this.turnRight(dt)
-                break
-        }
-    }
-    */
-
 }

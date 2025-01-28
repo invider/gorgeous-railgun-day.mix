@@ -5,6 +5,7 @@ class Platform extends Body {
 
     constructor(st) {
         super( extend({
+            team: 0,
             hull: 100,
         }, st) )
     }

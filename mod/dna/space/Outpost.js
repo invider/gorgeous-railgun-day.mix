@@ -5,12 +5,10 @@ class Outpost extends MultiPlatform {
     constructor(st) {
         super(
             extend({
+                name:   'outpost',
+                team:    1,
+                r:       40,
                 scanned: true,
-                name: 'outpost',
-                team: 1,
-                x:    0,
-                y:    0,
-                r:    40,
             }, st)
         )
         this.install( new dna.space.pod.MultiSolid() )
@@ -21,9 +19,8 @@ class Outpost extends MultiPlatform {
         const R = r * 1.7
 
         this.attach( new dna.space.Dock({
-            name: 'dock1',
-            x: x,
-            y: y - R,
+            x:   x,
+            y:   y - R,
             dx:  0,
             dy:  1,
             mount: {
@@ -33,9 +30,8 @@ class Outpost extends MultiPlatform {
         }))
 
         this.attach( new dna.space.Dock({
-            name: 'dock2',
-            x: x + R,
-            y: y,
+            x:   x + R,
+            y:   y,
             dx: -1,
             dy:  0,
             mount: {
@@ -45,9 +41,8 @@ class Outpost extends MultiPlatform {
         }))
 
         this.attach( new dna.space.Dock({
-            name: 'dock3',
-            x: x,
-            y: y + R,
+            x:   x,
+            y:   y + R,
             dx:  0,
             dy: -1,
             mount: {
@@ -57,9 +52,8 @@ class Outpost extends MultiPlatform {
         }))
 
         this.attach( new dna.space.Dock({
-            name: 'dock4',
-            x: x - R,
-            y: y,
+            x:  x - R,
+            y:  y,
             dx: 1,
             dy: 0,
             mount: {

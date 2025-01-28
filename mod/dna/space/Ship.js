@@ -7,14 +7,11 @@ class Ship extends Platform {
 
     constructor(st) {
         super( extend({
-            team:    0,
             type:   'spacecraft',
             name:   'ship' + (++id),
+            r:      15,
 
-            x:       0,
-            y:       0,
-            r:       15,
-            hull:    50,
+            hull:   50,
             scanned: true,
 
             // stats
