@@ -63,16 +63,21 @@ class Body extends LabFrame {
         // run pre-install procedures
         if (isFun(pod.preInstall)) pod.preInstall(this)
 
-        // uninstall the previous pod if present
+        // uninstall the previous named pod if present
+        this.uninstall(name)
+
+        // deactivate the previous alias pods if present
         const prevPod = this[alias]
         if (prevPod) {
-            if (isFun(prevPod.onReplace)) prevPod.onReplace(pod)
+            this.deactivatePod(prevPod)
             if (prevPod.name === prevPod.alias) this.uninstall(prevPod)
         }
 
         // install a new one
         this.attach(pod, pod.name || pod.alias)
-        if (pod.name !== alias) this[alias] = pod
+        //if (pod.name !== alias) this[alias] = pod
+        this.activatePod(pod)
+
         if (isFun(pod.onInstall)) pod.onInstall()
     }
 
@@ -91,11 +96,18 @@ class Body extends LabFrame {
 
     activatePod(targetPod) {
         const pod = this._getPod(targetPod)
-        if (!pod || pod.name === pod.alias) return false // missing pod or unable to activate
-        if (this[pod.alias] === pod) return false // already activated
+        if (!pod) return false // missing pod
 
-        this.deactivatePod(pod.alias, pod)
-        this[pod.alias] = pod
+        if (this[pod.alias] && this[pod.alias] !== pod) {
+            this.deactivatePod(pod.alias, pod)
+        }
+        pod.deactivated = false 
+        pod.paused      = false
+        pod.hidden      = false
+        pod.disabled    = false
+        if (pod.name !== pod.alias) {
+            this[pod.alias] = pod
+        }
         if (pod.onActivate) pod.onActivate()
 
         return true
@@ -105,12 +117,14 @@ class Body extends LabFrame {
         const pod = this._getPod(targetPod)
         if (!pod) return false
 
-        if (pod.onDeactivate) pod.onDeactivate(nextPod)
-        if (pod.name === pod.alias) {
-            this.uninstall(pod)
-        } else {
+        pod.deactivated = true
+        pod.disabled    = true
+        pod.paused      = true
+        pod.hidded      = true
+        if (pod.name !== pod.alias) {
             delete this[pod.alias]
         }
+        if (pod.onDeactivate) pod.onDeactivate(nextPod)
 
         return true
     }
@@ -118,8 +132,7 @@ class Body extends LabFrame {
     isActivated(targetPod) {
         const pod = this._getPod(targetPod)
         if (!pod) return false
-
-        return (pod.name === pod.alias || this[pod.alias] === pod)
+        return !pod.deactivated
     }
 
     uninstall(targetPod) {

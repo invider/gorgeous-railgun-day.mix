@@ -9,8 +9,6 @@ class AutoRotateControl {
     }
 
     evo(dt) {
-        if (!this.__.isActivated(this)) return
-
         // direct ship turn
         this.__.dir += math.normalizeAngle(this.turnVelocity * dt)
     }
