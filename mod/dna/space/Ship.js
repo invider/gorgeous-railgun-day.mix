@@ -69,7 +69,7 @@ class Ship extends Platform {
         if (this.debug) {
             let label = this.status? this.name + ': ' + this.status : this.name
             if (this.selected) label = '[' + label + ']'
-            if (this.targeting.directlyOnTarget) label = '>>' + label + '<<'
+            if (!this.targeting.deactivated && this.targeting.directlyOnTarget) label = '>>' + label + '<<'
             if (this.spacecraftPadControl && this.spacecraftPadControl._controllerId) label = '=== ' + label + ' ==='
             fill(rgb(1, 1, 1))
             font(env.style.font.main.head)
@@ -81,7 +81,15 @@ class Ship extends Platform {
     }   
 
     getStatus() {
-        return `[${this.name}.${this.team}] HULL:${floor(this.hull)}/${this.maxHull}`
+        let label = `[${this.name}.${this.team}] HULL:${floor(this.hull)}/${this.maxHull}`
+
+        const target = this.targeting.getTarget()
+        if (target) {
+            if (!target.name) label += ` => [annonymous@${round(target.x)}:${round(target.y)}]`
+            else label += ` => [${target.name}@${round(target.x)}:${round(target.y)}]`
+        }
+
+        return label
     }
 
 }

@@ -22,7 +22,7 @@ class Targeting {
         this.monitor = monitor
     }
 
-    setTarget(target) {
+    setTarget(target, st) {
         const prevTarget = this.target
         if (target === prevTarget) return false
 
@@ -32,8 +32,26 @@ class Targeting {
             else if (!target.name) log(`[${this.__.name}] => [annonymous@${round(target.x)}:${round(target.y)}]`)
             else log(`[${this.__.name}] => [${target.name}@${round(target.x)}:${round(target.y)}]`)
         }
+        if (st) {
+            if (st.attitude) this.setAttitude(st.attitude)
+        }
 
         return true
+    }
+
+    getTarget() {
+        return this.target
+    }
+
+    setAttitude(attitude) {
+        this.attitude = attitude
+    }
+
+    switchAttitude() {
+        this.attitude ++
+        if (this.attitude > dry.attitude.MAX) {
+            this.attitude = 1
+        }
     }
 
     turnOnTarget(dt) {
@@ -101,17 +119,6 @@ class Targeting {
         } else {
             if (this.monitor && this.monitor.onTarget) this.monitor.onTarget()
             this.directlyOnTarget = true
-        }
-    }
-
-    setAttitude(attitude) {
-        this.attitude = attitude
-    }
-
-    switchAttitude() {
-        this.attitude ++
-        if (this.attitude > dry.attitude.MAX) {
-            this.attitude = 1
         }
     }
 

@@ -53,7 +53,7 @@ class Body extends LabFrame {
                 const p = pod[i]
                 this.install(p)
             }
-            return
+            return pod
         }
 
         // determine the install alias
@@ -79,6 +79,8 @@ class Body extends LabFrame {
         this.activatePod(pod)
 
         if (isFun(pod.onInstall)) pod.onInstall()
+
+        return pod
     }
 
     _getPod(pod) {

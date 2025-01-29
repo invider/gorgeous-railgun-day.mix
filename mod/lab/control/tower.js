@@ -33,6 +33,28 @@ function capturePlatform(platform) {
 
     log(`[#${env.leadControllerId}] capturing platform [${platform.name}]`)
     if (platform.capture) platform.capture(env.leadControllerId)
+    if (platform.type === 'spacecraft') {
+        platform.install( new dna.space.pod.ProximitySensor({
+            name: 'basicProximitySensor',
+            distance: 50,
+            monitor:  {
+                onProximityReached: (sensor, dist) => {
+                    log(`We are here!!! distance: ${dist}`)
+                    console.dir(sensor)
+                },
+            },
+        }))
+        platform.install( new dna.space.pod.DistanceSensor({
+            name: 'basicDistanceSensor',
+            distance: 500,
+            monitor:  {
+                onDistanceReached: (sensor, dist) => {
+                    log(`We are here!!! distance: ${dist}`)
+                    console.dir(sensor)
+                }
+            },
+        }))
+    }
 
     return true
 }
