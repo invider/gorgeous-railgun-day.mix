@@ -67,7 +67,7 @@ class Body extends LabFrame {
         const prevPod = this[alias]
         if (prevPod) {
             if (isFun(prevPod.onReplace)) prevPod.onReplace(pod)
-            this.uninstall(prevPod)
+            if (prevPod.name === prevPod.alias) this.uninstall(prevPod)
         }
 
         // install a new one
@@ -76,14 +76,55 @@ class Body extends LabFrame {
         if (isFun(pod.onInstall)) pod.onInstall()
     }
 
-    uninstall(pod) {
-        if (!pod) return false
-        
+    _getPod(pod) {
+        if (!pod) return
+
         if (isString(pod)) {
             const podEntity = this[pod]
-            if (!podEntity) return false
-            pod = podEntity
+            if (!podEntity) return
+            return podEntity
+        } else if (isObj(pod)) {
+            if (this._ls.indexOf(pod) < 0) return
+            return pod
         }
+    }
+
+    activatePod(targetPod) {
+        const pod = this._getPod(targetPod)
+        if (!pod || pod.name === pod.alias) return false // missing pod or unable to activate
+        if (this[pod.alias] === pod) return false // already activated
+
+        this.deactivatePod(pod.alias, pod)
+        this[pod.alias] = pod
+        if (pod.onActivate) pod.onActivate()
+
+        return true
+    }
+
+    deactivatePod(targetPod, nextPod) {
+        const pod = this._getPod(targetPod)
+        if (!pod) return false
+
+        if (pod.onDeactivate) pod.onDeactivate(nextPod)
+        if (pod.name === pod.alias) {
+            this.uninstall(pod)
+        } else {
+            delete this[pod.alias]
+        }
+
+        return true
+    }
+
+    isActivated(targetPod) {
+        const pod = this._getPod(targetPod)
+        if (!pod) return false
+
+        return (pod.name === pod.alias || this[pod.alias] === pod)
+    }
+
+    uninstall(targetPod) {
+        const pod = this._getPod(targetPod)
+        if (!pod) return false
 
         if (isFun(pod.onUninstall)) pod.onUninstall()
         this.detach(pod)
@@ -99,5 +140,4 @@ class Body extends LabFrame {
         stroke('#b0ff20')
         circle(0, 0, this.r)
     }
-
 }

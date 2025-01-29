@@ -9,7 +9,6 @@ class Projectile extends Platform {
             name:     'projectile' + (++id),
             r:        5,
             lifespan: 5,
-            speed:    200,
             force:    20,
         }, st) )
 
@@ -21,7 +20,7 @@ class Projectile extends Platform {
             }),
             new dna.space.pod.Attitude(),
             new dna.space.pod.Thruster({
-                speed: 100,
+                velocity: 150,
             }),
         ])
 
@@ -37,9 +36,6 @@ class Projectile extends Platform {
 
     evo(dt) {
         super.evo(dt)
-
-        //this.x += Math.cos(this.dir) * this.speed * dt
-        //this.y += Math.sin(this.dir) * this.speed * dt
 
         this.lifespan -= dt
         if (this.lifespan < 0) {

@@ -6,15 +6,17 @@ class Thruster {
             subtype: 'propulsion',
             name:    'thruster',
 
-            speed:        0,
+            velocity:        0,
+            keepVelocity:    false,
+            targetVelocity:  0,
 
             // specs
             acceleration: 40,
             deceleration: 25,
-            maxSpeed:     100,
-            setSpeed:     100,
-            maxRevSpeed:  -100,
-            setRevSpeed:  -100,
+            maxVelocity:     100,
+            maxRevVelocity: -100,
+
+            monitor:      null,
         }, st)
     }
 
@@ -23,17 +25,45 @@ class Thruster {
     }
 
     forward(dt) {
-        if (this.speed >= this.setSpeed) return
-        this.speed = min( this.speed + this.acceleration * dt, this.setSpeed )
+        if (this.velocity >= this.maxVelocity) return
+        this.velocity = min( this.velocity + this.acceleration * dt, this.maxVelocity )
     }
 
     backward(dt) {
-        if (this.speed <= this.setRevSpeed) return
-        this.speed = max( this.speed - this.deceleration * dt, this.setRevSpeed )
+        if (this.velocity <= this.maxRevVelocity) return
+        this.velocity = max( this.velocity - this.deceleration * dt, this.maxRevVelocity )
     }
 
     evo(dt) {
-        this.__.x += cos(this.__.dir) * this.speed * dt
-        this.__.y += sin(this.__.dir) * this.speed * dt
+        if (this.keepVelocity) {
+            // adjust velocity
+            if (this.velocity < this.targetVelocity) {
+                this.velocity = this.velocity + this.acceleration * dt
+                if (this.velocity > this.targetVelocity) {
+                    this.velocity = this.targetVelocity
+                    if (this.monitor && this.monitor.onTargetVelocity) this.monitor.onTargetVelocity(this)
+                }
+            } else if (this.velocity > this.targetVelocity) {
+                this.velocity = this.velocity - this.deceleration * dt
+                if (this.velocity < this.targetVelocity) {
+                    this.velocity = this.targetVelocity
+                    if (this.monitor && this.monitor.onTargetVelocity) this.monitor.onTargetVelocity(this)
+                }
+            }
+        }
+
+        // move
+        this.__.x += cos(this.__.dir) * this.velocity * dt
+        this.__.y += sin(this.__.dir) * this.velocity * dt
+    }
+
+    setTargetVelocity(targetVelocity) {
+        this.keepVelocity = true
+        this.targetVelocity = clamp(targetVelocity, this.maxRevVelocity, this.maxVelocity)
+    }
+
+    resetTargetVelocity() {
+        this.keepVelocity = false
+        this.targetVelocity = 0
     }
 }

@@ -13,10 +13,14 @@ function selectPlatform(platform) {
     if (!platform || !(platform instanceof dna.space.Platform)) return false
 
     if (env.selected) {
-        env.selected.selected = false
+        const prevPlatform = env.selected
+        prevPlatform.selected = false
+        prevPlatform.activatePod('autoRotateControl')
     }
     platform.selected = true
     env.selected = platform
+
+    if (platform.targeting) platform.activatePod(platform.targeting)
 }
 
 function capturePlatform(platform) {

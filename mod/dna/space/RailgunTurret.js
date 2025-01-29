@@ -14,7 +14,7 @@ class RailgunTurret extends Platform {
             scanned: true,
 
             // specs
-            turnSpeed: PI,
+            turnVelocity: PI,
 
             mount: {
                 x: 0,

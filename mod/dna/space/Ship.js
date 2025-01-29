@@ -15,8 +15,6 @@ class Ship extends Platform {
             scanned: true,
 
             // stats
-            maxSpeed:     100,
-            acceleration: 10,
             maxHull:      100,
 
             status:  '',

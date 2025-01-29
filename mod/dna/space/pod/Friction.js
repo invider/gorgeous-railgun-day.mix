@@ -13,10 +13,10 @@ class Friction {
     }
 
     evo(dt) {
-        if (this.__.thruster.speed > 0) {
-            this.__.thruster.speed = max( this.__.thruster.speed - this.amount * dt, 0 )
-        } else if (this.__.thruster.speed < 0) {
-            this.__.thruster.speed = min( this.__.thruster.speed + this.amount * dt, 0 )
+        if (this.__.thruster.velocity > 0) {
+            this.__.thruster.velocity = max( this.__.thruster.velocity - this.amount * dt, 0 )
+        } else if (this.__.thruster.velocity < 0) {
+            this.__.thruster.velocity = min( this.__.thruster.velocity + this.amount * dt, 0 )
         }
     }
 }

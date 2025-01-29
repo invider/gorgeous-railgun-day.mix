@@ -11,15 +11,15 @@ class Attitude {
             subtype: 'propulsion',
             name:    'attitude',
 
-            turnSpeed:    PI,
+            turnVelocity:    PI,
         }, st)
     }
 
     left(dt) {
-        this.__.dir -= this.turnSpeed * dt
+        this.__.dir -= this.turnVelocity * dt
     }
 
     right(dt) {
-        this.__.dir += this.turnSpeed * dt
+        this.__.dir += this.turnVelocity * dt
     }
 }
