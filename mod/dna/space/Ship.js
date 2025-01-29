@@ -10,6 +10,7 @@ class Ship extends Platform {
             type:   'spacecraft',
             name:   'ship' + (++id),
             r:      15,
+            r2:     25,
 
             hull:   50,
             scanned: true,
@@ -23,14 +24,13 @@ class Ship extends Platform {
 
         this.install([
             new dna.space.pod.Solid({
-                x: 0,
-                y: 0,
                 r: 15,
             }),
             new dna.space.pod.Attitude(),
             new dna.space.pod.Thruster(),
             new dna.space.pod.Friction(),
             new dna.space.pod.Targeting(),
+            new dna.space.pod.Railgun(),
             new dna.space.pod.SpacecraftPadControl(),
         ])
     }

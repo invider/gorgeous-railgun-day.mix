@@ -24,8 +24,6 @@ class RailgunTurret extends Platform {
 
         this.install([
             new dna.space.pod.Solid({
-                x: 0,
-                y: 0,
                 r: 15,
             }),
             new dna.space.pod.Attitude(),

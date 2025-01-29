@@ -22,8 +22,6 @@ class Dock extends Platform {
         }, st) )
 
         this.install( new dna.space.pod.Solid({
-            x: 0,
-            y: 0,
             r: 15,
         }))
     }

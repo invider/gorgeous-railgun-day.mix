@@ -15,11 +15,22 @@ class SpacecraftPadControl {
     }
 
     activate(action) {
-        if (this.disabled) return
+        if (this.disabled || this.__.disabled) return
+
+        switch(action.name) {
+            case 'A':
+            case 'B':
+                // TODO make into evolvable action to charge/animate and preserve the rate of fire
+                // imediate for now
+                if (this.__.primaryWeapon) {
+                    this.__.primaryWeapon.fire()
+                }
+                break
+        }
     }
 
     act(action, dt) {
-        if (this.disabled) return
+        if (this.disabled || this.__.disabled) return
 
         switch(action.name) {
             case 'LEFT':
@@ -38,5 +49,6 @@ class SpacecraftPadControl {
     }
 
     deactivate(action) {
+        if (this.disabled || this.__.disabled) return
     }
 }

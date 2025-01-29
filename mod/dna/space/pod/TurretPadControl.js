@@ -13,7 +13,7 @@ class TurretPadControl {
     }
 
     activate(action) {
-        if (this.disabled) return
+        if (this.disabled || this.__.disabled) return
 
         switch(action.name) {
             case 'A':
@@ -26,7 +26,7 @@ class TurretPadControl {
     }
 
     act(action, dt) {
-        if (this.disabled) return
+        if (this.disabled || this.__.disabled) return
 
         switch(action.name) {
             case 'LEFT':

@@ -9,7 +9,7 @@ class Solid {
 
             x:        0,
             y:        0,
-            r:        10,
+            r:        1,
         }, st)
     }
 
