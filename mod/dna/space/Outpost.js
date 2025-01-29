@@ -92,8 +92,6 @@ class Outpost extends MultiPlatform {
         return railgun
     }
 
-    evo(dt) {}
-
     draw() {
         let bc = env.style.teamColor(this),
             gc = env.style.teamGlow(this)

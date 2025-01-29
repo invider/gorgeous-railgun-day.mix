@@ -20,7 +20,7 @@ class TurretPadControl {
             case 'B':
                 // TODO make into evolvable action to charge/animate and preserve the rate of fire
                 // imediate for now
-                this.__.primaryWeapon.fire()
+                this.__.primaryWeapon.trigger()
                 break
         }
     }
@@ -34,6 +34,17 @@ class TurretPadControl {
                 break
             case 'RIGHT':
                 this.__.attitude.right(dt)
+                break
+        }
+    }
+
+    deactivate(action) {
+        if (this.disabled || this.__.disabled) return
+
+        switch(action.name) {
+            case 'A':
+            case 'B':
+                this.__.primaryWeapon.stop()
                 break
         }
     }

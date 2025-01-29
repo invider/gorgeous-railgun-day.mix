@@ -15,6 +15,7 @@ class RailgunTurret extends Platform {
 
             // specs
             turnVelocity: PI,
+            maxHull:      100,
 
             mount: {
                 x: 0,
@@ -65,5 +66,9 @@ class RailgunTurret extends Platform {
         super.draw()
 
         restore()
+    }
+
+    getStatus() {
+        return `[${this.name}.${this.team}] HULL:${floor(this.hull)}/${this.maxHull}`
     }
 }

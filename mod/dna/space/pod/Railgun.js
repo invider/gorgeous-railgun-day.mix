@@ -6,6 +6,12 @@ class Railgun {
             subtype: 'weapon',
             name:    'railgun',
             alias:   'primaryWeapon',
+
+            triggered:    false,
+            charge:       0,
+
+            // spec
+            rechargeTime: .25,
         }, st)
     }
 
@@ -21,5 +27,24 @@ class Railgun {
             y:      y + dy * r2,
             dir:    dir,
         })
+    }
+
+    trigger() {
+        this.triggered = true
+    }
+
+    stop() {
+        this.triggered = false
+    }
+
+    evo(dt) {
+        this.charge += dt
+
+        if (this.triggered) {
+            if (this.charge >= this.rechargeTime) {
+                this.fire()
+                this.charge = 0
+            }
+        }
     }
 }
