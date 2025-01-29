@@ -18,7 +18,7 @@ class Projectile extends Platform {
             }),
             new dna.space.pod.Attitude(),
             new dna.space.pod.Thruster({
-                velocity: 150,
+                velocity: 200,
             }),
         ])
 

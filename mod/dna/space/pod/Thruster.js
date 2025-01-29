@@ -11,10 +11,10 @@ class Thruster {
             targetVelocity:  0,
 
             // specs
-            acceleration: 40,
-            deceleration: 25,
-            maxVelocity:     100,
-            maxRevVelocity: -100,
+            acceleration:    40,
+            deceleration:    25,
+            maxVelocity:     80,
+            maxRevVelocity: -80,
         }, st)
     }
 
@@ -56,6 +56,10 @@ class Thruster {
     setTargetVelocity(targetVelocity) {
         this.keepVelocity = true
         this.targetVelocity = clamp(targetVelocity, this.maxRevVelocity, this.maxVelocity)
+    }
+
+    fullAhead() {
+        this.setTargetVelocity(this.maxVelocity)
     }
 
     resetTargetVelocity() {

@@ -5,7 +5,8 @@ class RailgunTurret extends Platform {
 
     constructor(st) {
         super( extend({
-            type:   'turret',
+            type:    'module',
+            subtype: 'turret',
             r:       10,
             r2:      8,
 

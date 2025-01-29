@@ -5,6 +5,7 @@ class Outpost extends MultiPlatform {
     constructor(st) {
         super(
             extend({
+                type:   'station',
                 name:   'outpost',
                 team:    1,
                 r:       40,

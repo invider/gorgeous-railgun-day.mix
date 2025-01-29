@@ -67,3 +67,15 @@ function target(source, target) {
         source.targeting.switchAttitude()
     }
 }
+
+function getRandomEnemy(platform) {
+    if (!platform) return
+
+    const team = platform.team
+    const enemyList = lab.port.find( e => !e.dead
+        && (e instanceof dna.space.Platform)
+        && e.team !== team
+        && ['spacecraft', 'module'].includes(e.type)
+    )
+    return lib.source.targeting.rnde(enemyList)
+}

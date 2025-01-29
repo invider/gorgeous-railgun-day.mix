@@ -24,7 +24,7 @@ class Targeting {
 
     setTarget(target, st) {
         const prevTarget = this.target
-        if (target === prevTarget) return false
+        //if (target === prevTarget) return false // probably need to reset it anyways
 
         this.target = target
         if (env.traceTargeting || env.config.traceTargeting) {
