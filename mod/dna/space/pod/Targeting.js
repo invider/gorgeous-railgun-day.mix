@@ -9,11 +9,17 @@ class Targeting {
 
             target:   null,
             attitude: dry.attitude.TOWARDS,
+
+            monitor:  null,
         }, st)
     }
 
     preInstall(body) {
         if (!body.attitude) throw `an attitude pod is expected in [${body.name}]!`
+    }
+
+    setMonitor(monitor) {
+        this.monitor = monitor
     }
 
     setTarget(target) {
@@ -80,15 +86,21 @@ class Targeting {
 
             if (left) {
                 __.attitude.left(dt)
-                if (tune && __.dir < b) __.dir = b
+                if (tune && __.dir < b) {
+                    __.dir = b
+                }
                 if (__.dir < 0) __.dir += TAU
             } else {
                 __.attitude.right(dt)
                 if (tune && __.dir > b) __.dir = b
                 if (__.dir >= TAU) __.dir = __.dir % TAU
             }
-            __.attitude.lastBearing = b
-            __.attitude.lastHeading = __.dir
+            this.lastBearing = b
+            this.lastHeading = __.dir
+            this.lastShift   = abs(b - __.dir)
+        } else {
+            if (this.monitor && this.monitor.onTarget) this.monitor.onTarget()
+            this.directlyOnTarget = true
         }
     }
 
@@ -105,6 +117,8 @@ class Targeting {
 
     evo(dt) {
         if (this.__.control !== this) return // the targeting pod is not in control right now
+
+        this.directlyOnTarget = false
 
         // TODO implement attitudes without targets (like anti-missile maneuvres)
         if (!this.target) return
@@ -124,5 +138,4 @@ class Targeting {
                 break
         }
     }
-
 }

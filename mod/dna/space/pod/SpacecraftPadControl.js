@@ -15,9 +15,12 @@ class SpacecraftPadControl {
     }
 
     activate(action) {
+        if (this.disabled) return
     }
 
     act(action, dt) {
+        if (this.disabled) return
+
         switch(action.name) {
             case 'LEFT':
                 this.__.attitude.left(dt)

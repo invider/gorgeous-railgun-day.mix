@@ -15,8 +15,6 @@ class Thruster {
             deceleration: 25,
             maxVelocity:     100,
             maxRevVelocity: -100,
-
-            monitor:      null,
         }, st)
     }
 
@@ -41,13 +39,11 @@ class Thruster {
                 this.velocity = this.velocity + this.acceleration * dt
                 if (this.velocity > this.targetVelocity) {
                     this.velocity = this.targetVelocity
-                    if (this.monitor && this.monitor.onTargetVelocity) this.monitor.onTargetVelocity(this)
                 }
             } else if (this.velocity > this.targetVelocity) {
                 this.velocity = this.velocity - this.deceleration * dt
                 if (this.velocity < this.targetVelocity) {
                     this.velocity = this.targetVelocity
-                    if (this.monitor && this.monitor.onTargetVelocity) this.monitor.onTargetVelocity(this)
                 }
             }
         }

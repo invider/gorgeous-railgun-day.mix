@@ -32,11 +32,7 @@ function capturePlatform(platform) {
     }
 
     log(`[#${env.leadControllerId}] capturing platform [${platform.name}]`)
-    if (!platform.padControl) {
-        // install pad control pod
-        platform.install( new dna.space.pod.SpacecraftPadControl() )
-    }
-    lab.monitor.controller.bind(env.leadControllerId, platform.padControl)
+    if (platform.capture) platform.capture(env.leadControllerId)
 
     return true
 }

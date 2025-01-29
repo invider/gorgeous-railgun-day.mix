@@ -34,6 +34,11 @@ class RailgunTurret extends Platform {
         ])
     }
 
+    capture(controllerId) {
+        this.activatePod('turretPadControl')
+        lab.monitor.controller.bind(controllerId, this.turretPadControl)
+    }
+
     draw() {
         const { x, y, dx, dy, r, r2, dir, mount } = this
         const bx = cos(dir),

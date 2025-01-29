@@ -9,6 +9,7 @@
 > ship source
 > main menu
 > local menu
+> how to handle the need for multiple aliases, e.g. control pads with are both 'control' and 'pads' type of entities (?)
 
 # wave 2
 > GDD sketch

@@ -31,7 +31,13 @@ class Ship extends Platform {
             new dna.space.pod.Thruster(),
             new dna.space.pod.Friction(),
             new dna.space.pod.Targeting(),
+            new dna.space.pod.SpacecraftPadControl(),
         ])
+    }
+
+    capture(controllerId) {
+        this.activatePod('spacecraftPadControl')
+        lab.monitor.controller.bind(controllerId, this.spacecraftPadControl)
     }
 
     evo(dt) {
@@ -63,7 +69,8 @@ class Ship extends Platform {
         if (this.debug) {
             let label = this.status? this.name + ': ' + this.status : this.name
             if (this.selected) label = '[' + label + ']'
-            if (this.padControl && this.padControl._controllerId) label = '== ' + label + ' =='
+            if (this.targeting.directlyOnTarget) label = '>>' + label + '<<'
+            if (this.spacecraftPadControl && this.spacecraftPadControl._controllerId) label = '=== ' + label + ' ==='
             fill(rgb(1, 1, 1))
             font(env.style.font.main.head)
             baseTop()
