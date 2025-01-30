@@ -52,7 +52,7 @@ class Bot {
         } else {
             if (__.targeting.directlyOnTarget) {
                 __.primaryWeapon.trigger()
-            } else if (__.targeting.lastShift < .1) {
+            } else if (__.targeting.lastShift < .05) {
                 __.primaryWeapon.trigger()
             } else {
                 __.primaryWeapon.stop()

@@ -8,9 +8,14 @@ function sector() {
             y: lib.source.traffic.rndi(ry(1) * .8) - ry(.5) * .8,
         })
 
-        ship.install( new dna.space.pod.AutoRotateControl({
-            turnVelocity: lib.source.traffic.rnds() * (.2 + lib.source.traffic.rndf() * PI),
-        }))
+        ship.install([
+            new dna.space.pod.AutoRotateControl({
+                turnVelocity: lib.source.traffic.rnds() * (.2 + lib.source.traffic.rndf() * PI),
+            }),
+            new dna.space.pod.Bot(),
+        ])
+
+        ship.activatePod('targeting')
     }
 }
 sector.Z = 21

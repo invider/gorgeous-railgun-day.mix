@@ -1,6 +1,5 @@
 # wave 1
 > camera area zoom-in
-> targeting pod with a proximity sensor(?)
 > ship navigation (waypoints)
 > ship attacks 
 > rotating outpost
@@ -38,5 +37,8 @@
 > sector status indicator (green - yellow - red alert)
 > event hints and floating text
 
+V targeting pod 
+V proximity sensor
+V distance sensor
 V ship movements
 

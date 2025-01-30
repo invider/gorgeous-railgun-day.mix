@@ -26,7 +26,9 @@ class Ship extends Platform {
             new dna.space.pod.Solid({
                 r: 15,
             }),
-            new dna.space.pod.Attitude(),
+            new dna.space.pod.Attitude({
+                turnVelocity: HALF_PI + lib.source.traffic.rndf() * PI,
+            }),
             new dna.space.pod.Thruster(),
             new dna.space.pod.Friction(),
             new dna.space.pod.Targeting(),
@@ -68,9 +70,11 @@ class Ship extends Platform {
         // debug info
         if (this.debug) {
             let label = this.status? this.name + ': ' + this.status : this.name
+            if (this.targeting.target) label += ' => ' + this.targeting.target.name
             if (this.selected) label = '[' + label + ']'
             if (!this.targeting.deactivated && this.targeting.directlyOnTarget) label = '>>' + label + '<<'
             if (this.spacecraftPadControl && this.spacecraftPadControl._controllerId) label = '=== ' + label + ' ==='
+
             fill(rgb(1, 1, 1))
             font(env.style.font.main.head)
             baseTop()
