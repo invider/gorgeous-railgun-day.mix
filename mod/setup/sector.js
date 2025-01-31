@@ -12,10 +12,10 @@ function sector() {
             new dna.space.pod.AutoRotateControl({
                 turnVelocity: lib.source.traffic.rnds() * (.2 + lib.source.traffic.rndf() * PI),
             }),
-            new dna.space.pod.Bot(),
+            //new dna.space.pod.Bot(),
         ])
 
-        ship.activatePod('targeting')
+        //ship.activatePod('targeting')
     }
 }
 sector.Z = 21

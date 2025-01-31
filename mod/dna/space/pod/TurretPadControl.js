@@ -13,14 +13,13 @@ class TurretPadControl {
     }
 
     activate(action) {
-        if (this.disabled || this.__.disabled) return
+        const __ = this.__
+        if (this.disabled || __.disabled) return
 
         switch(action.name) {
             case 'A':
             case 'B':
-                // TODO make into evolvable action to charge/animate and preserve the rate of fire
-                // imediate for now
-                this.__.primaryWeapon.trigger()
+                if (__.primaryWeapon) __.primaryWeapon.trigger()
                 break
         }
     }
@@ -39,12 +38,13 @@ class TurretPadControl {
     }
 
     deactivate(action) {
-        if (this.disabled || this.__.disabled) return
+        const __ = this.__
+        if (this.disabled || __.disabled) return
 
         switch(action.name) {
             case 'A':
             case 'B':
-                this.__.primaryWeapon.stop()
+                if (__.primaryWeapon) __.primaryWeapon.stop()
                 break
         }
     }
