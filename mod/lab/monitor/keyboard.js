@@ -5,6 +5,8 @@
  * @expect controller monitor to be available at ```lab/monitor/controller```.
  */
 
+const controller = require('lab/monitor/controller')
+
 // initialize keyboard actions
 function init() {
     // register keyboard events
@@ -12,14 +14,14 @@ function init() {
         if (e.repeat) return
         const controllerAction = env.bind.keyMap[e.code]
         if (controllerAction) {
-            lab.monitor.controller.act(controllerAction, e)
+            controller.act(controllerAction, e)
         }
     })
     trap.on('keyUp', (e) => {
         if (e.repeat) return
         const controllerAction = env.bind.keyMap[e.code]
         if (controllerAction) {
-            lab.monitor.controller.deactivate(controllerAction, e)
+            controller.cutOff(controllerAction, e)
         }
     })
 }

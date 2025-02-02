@@ -36,19 +36,19 @@ function bind(controllerId, target) {
     target._controllerId = controllerId
 }
 
-// deactivate all actions for the provided controller
+// cut off all actions for the provided controller
 //
 // @param {number/1+} controllerId
-function deactivateAllActions(controllerId) {
+function cutOffAllActions(controllerId) {
     if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
 
     const icontroller = controllerId - 1
     const target = targetMap[icontroller]
-    if (target && target.deactivate) {
+    if (target && target.cutOff) {
         const triggers = ctrl[icontroller] || []
         for (let action = 0; action < triggers.length; action++) {
             if (triggers[action]) {
-                target.deactivate(action)
+                target.cutOff(action)
             }
         }
     }
@@ -64,7 +64,7 @@ function release(controllerId) {
     const icontroller = controllerId - 1
     const target = targetMap[icontroller]
     if (target) {
-        deactivateAllActions(controllerId) // need to deactivate all triggered actions before release
+        cutOffAllActions(controllerId) // need to cut off all triggered actions before release
         target._controller = 0
         targetMap[icontroller] = false
         return true
@@ -139,7 +139,7 @@ function target(controller) {
     return targetMap[icontroller]
 }
 
-// activate or continue the controller action
+// actuate or continue the controller action
 //
 // @param {number} action
 // @param {number/1+} controller
@@ -163,8 +163,8 @@ function act(action, sourceEvent) {
 
             const target = targetMap[icontroller]
             if (target) {
-                if (target.activate && !target.disabled) {
-                    target.activate(action, sourceEvent)
+                if (target.actuate && !target.disabled) {
+                    target.actuate(action, sourceEvent)
                 }
             } else {
                 // no target binded, try to capture the controller
@@ -182,7 +182,7 @@ function act(action, sourceEvent) {
 //
 // @param {number} action
 // @param {number/1+} controller
-function deactivate(action, sourceEvent) {
+function cutOff(action, sourceEvent) {
     if (this.disabled) return
     if (!action) throw WRONG_ACTION
 
@@ -196,8 +196,8 @@ function deactivate(action, sourceEvent) {
         const started = ctrl[icontroller][actionId]
         if (started) {
             const target = targetMap[icontroller]
-            if (target && target.deactivate && !target.disabled) {
-                target.deactivate(action, env.realTime - started)
+            if (target && target.cutOff && !target.disabled) {
+                target.cutOff(action, env.realTime - started)
             }
         }
         ctrl[icontroller][actionId] = OFF

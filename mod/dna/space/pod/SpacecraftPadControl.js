@@ -14,9 +14,8 @@ class SpacecraftPadControl {
         if (!body.thruster) throw `a thruster pod is expected in [${body.name}]!`
     }
 
-    activate(action) {
+    actuate(action) {
         const __ = this.__
-        if (this.disabled || __.disabled) return
 
         switch(action.name) {
             case 'A':
@@ -29,27 +28,26 @@ class SpacecraftPadControl {
     }
 
     act(action, dt) {
-        if (this.disabled || this.__.disabled) return
+        const __ = this.__
 
         switch(action.name) {
             case 'LEFT':
-                this.__.attitude.left(dt)
+                __.attitude.left(dt)
                 break
             case 'RIGHT':
-                this.__.attitude.right(dt)
+                __.attitude.right(dt)
                 break
             case 'UP':
-                this.__.thruster.forward(dt)
+                __.thruster.forward(dt)
                 break
             case 'DOWN':
-                this.__.thruster.backward(dt)
+                __.thruster.backward(dt)
                 break
         }
     }
 
-    deactivate(action) {
+    cutOff(action) {
         const __ = this.__
-        if (this.disabled || __.disabled) return
 
         switch(action.name) {
             case 'A':
