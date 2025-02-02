@@ -11,16 +11,21 @@ function platformAt(x, y) {
 
 function selectPlatform(platform) {
     if (!platform || !(platform instanceof dna.space.Platform)) return false
+    if (env.selected === platform) return false
 
     if (env.selected) {
         const prevPlatform = env.selected
         prevPlatform.selected = false
-        prevPlatform.activatePod('autoRotateControl')
+
+        if (!prevPlatform.control || !prevPlatform.control._controllerId) {
+            prevPlatform.activatePod('autoRotateControl')
+        }
     }
     platform.selected = true
     env.selected = platform
 
     if (platform.targeting) platform.activatePod(platform.targeting)
+    return true
 }
 
 function capturePlatform(platform) {
@@ -31,29 +36,10 @@ function capturePlatform(platform) {
         return
     }
 
-    log(`[#${env.leadControllerId}] capturing platform [${platform.name}]`)
+    log(`[controller #${env.leadControllerId}] capturing platform [${platform.name}]`)
     if (platform.capture) platform.capture(env.leadControllerId)
+
     if (platform.type === 'spacecraft') {
-        platform.install( new dna.space.pod.ProximitySensor({
-            name: 'basicProximitySensor',
-            distance: 50,
-            monitor:  {
-                onProximityReached: (sensor, dist) => {
-                    log(`We are here!!! distance: ${dist}`)
-                    console.dir(sensor)
-                },
-            },
-        }))
-        platform.install( new dna.space.pod.DistanceSensor({
-            name: 'basicDistanceSensor',
-            distance: 500,
-            monitor:  {
-                onDistanceReached: (sensor, dist) => {
-                    log(`We are here!!! distance: ${dist}`)
-                    console.dir(sensor)
-                }
-            },
-        }))
     }
 
     return true

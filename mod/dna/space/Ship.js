@@ -40,6 +40,28 @@ class Ship extends Platform {
     capture(controllerId) {
         this.activatePod('spacecraftPadControl')
         lab.monitor.controller.bind(controllerId, this.spacecraftPadControl)
+
+        // sensor test
+        this.install( new dna.space.pod.ProximitySensor({
+            name: 'basicProximitySensor',
+            distance: 50,
+            monitor:  {
+                onProximityReached: (sensor, dist) => {
+                    log(`We are here!!! distance: ${dist}`)
+                    console.dir(sensor)
+                },
+            },
+        }))
+        this.install( new dna.space.pod.DistanceSensor({
+            name: 'basicDistanceSensor',
+            distance: 500,
+            monitor:  {
+                onDistanceReached: (sensor, dist) => {
+                    log(`We are here!!! distance: ${dist}`)
+                    console.dir(sensor)
+                }
+            },
+        }))
     }
 
     evo(dt) {

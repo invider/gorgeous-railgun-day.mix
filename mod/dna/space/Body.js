@@ -122,7 +122,7 @@ class Body extends LabFrame {
         pod.deactivated = true
         pod.disabled    = true
         pod.paused      = true
-        pod.hidded      = true
+        pod.hidden      = true
         if (pod.name !== pod.alias) {
             delete this[pod.alias]
         }

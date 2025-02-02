@@ -1,5 +1,5 @@
 function capture(action) {
-    if (env.state !== 'port') return
+    if (env.state !== 'space') return
 
     log(`trying to capture controller #${action.controllerId}`)
     const railgun = lab.port.outpost.mountRailgun()
