@@ -67,8 +67,11 @@ const fixed = {
 const keyboardControllersMapping = [
     // quaker
     [ 'KeyW', 'KeyA', 'KeyS', 'KeyD',
-        'KeyV', 'KeyB', 'KeyE', 'KeyQ',
-        'KeyR', 'KeyF', 'KeyT', 'KeyG',
+        'KeyV', 'KeyB', 'KeyF', 'KeyG',
+        'Key1', 'Key2', 'Key3', 'Key4',  
+        'KeyR', 'KeyT',                     // menu, select
+        '', '', '', '',                     // alternative mapping
+        'Space', 'AltLeft', 'KeyE', 'KeyQ'
     ],
     // arrower
     [ 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight',
@@ -88,7 +91,7 @@ const keyboardControllersMapping = [
     ],
 ]
 
-const keyMap = {}
+const keyCodeMap = {}
 
 const padMap = [
     [12, 14, 13, 15, 0, 1, 2, 3, 8],
@@ -109,12 +112,15 @@ function init() {
 
 function indexKeyActions() {
     for (let keyboardController = 0; keyboardController < keyboardControllersMapping.length; keyboardController++) {
-        const keyActions = keyboardControllersMapping[keyboardController]
-        for (let actionId = 0; actionId < keyActions.length; actionId++) {
-            const key = keyActions[actionId]
-            if (key) {
-                keyMap[key] = Object.freeze({
+        const keyActionMap = keyboardControllersMapping[keyboardController]
+        for (let i = 0; i < keyActionMap.length; i++) {
+            const set = i / actions.length,
+                  actionId = i % actions.length,
+                  keyCode = keyActionMap[i]
+            if (keyCode) {
+                keyCodeMap[keyCode] = Object.freeze({
                     id:           actionId,
+                    set:          set,
                     name:         actionName(actionId),
                     controllerId: KEYBOARD_CONTROLLERS_BASE + keyboardController,
                 })

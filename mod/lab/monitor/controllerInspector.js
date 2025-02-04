@@ -24,6 +24,11 @@ function draw() {
               dy = 25
         for (let controller = 0; controller < ctrl.length; controller++) {
             if (ctrl[controller]) {
+                // controller title
+                text(`[#${controller + 1}]`, x, y)
+                y += dy
+
+                // state of controller actuators
                 for (let actionId = 0; actionId < ctrl[controller].length; actionId++) {
                     if (ctrl[controller][actionId]) {
                         text('[' + env.bind.actionName(actionId) + ']', x, y)

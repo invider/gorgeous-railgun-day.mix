@@ -12,14 +12,14 @@ function init() {
     // register keyboard events
     trap.on('keyDown', (e) => {
         if (e.repeat) return
-        const controllerAction = env.bind.keyMap[e.code]
+        const controllerAction = env.bind.keyCodeMap[e.code]
         if (controllerAction) {
             controller.act(controllerAction, e)
         }
     })
     trap.on('keyUp', (e) => {
         if (e.repeat) return
-        const controllerAction = env.bind.keyMap[e.code]
+        const controllerAction = env.bind.keyCodeMap[e.code]
         if (controllerAction) {
             controller.cutOff(controllerAction, e)
         }
