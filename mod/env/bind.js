@@ -1,4 +1,5 @@
 const MAX_CONTROLLERS           = 8
+const MAX_GAMEPADS              = 4
 const GAMEPAD_CONTROLLERS_BASE  = 1 // gamepad controllers usually indexed from 1..4
 const KEYBOARD_CONTROLLERS_BASE = 5 // keyboard controllers are indexed from 5..
 
@@ -15,10 +16,13 @@ const R1     = 10
 const L2     = 11
 const R2     = 12
 const MENU   = 13   // menu
-const SELECT = 14
+const START  = 14
+
+let bind
 
 // list of action names
 const actions = [
+    '',
     'UP',
     'LEFT',
     'DOWN',
@@ -32,7 +36,7 @@ const actions = [
     'L2',
     'R2',
     'MENU',
-    'SELECT',
+    'START',
 ]
 
 // globally fixed keys with no remap
@@ -91,13 +95,39 @@ const keyboardControllersMapping = [
     ],
 ]
 
-const keyCodeMap = {}
-
-const padMap = [
-    [12, 14, 13, 15, 0, 1, 2, 3, 8],
-    [12, 14, 13, 15, 0, 1, 2, 3, 8],
-    [12, 14, 13, 15, 0, 1, 2, 3, 8],
-    [12, 14, 13, 15, 0, 1, 2, 3, 8],
+const padActionIdMaps = [
+    {
+        // xbox 360 gamepad profile
+        axesSensitivity: 0.35,
+        axesPositive: [RIGHT,   DOWN,  RIGHT,  DOWN],
+        axesNegative: [LEFT,    UP,    LEFT,   UP],
+        buttonsSensitivity: 0.2, 
+        buttons: [A, B, X, Y, 0, 0, 0, 0, UP, LEFT, DOWN, RIGHT],
+    },
+    {
+        // xbox 360 gamepad profile
+        axesSensitivity: 0.35,
+        axesPositive: [12, 14, 12, 14],
+        axesNegative: [13, 15, 13, 15],
+        buttonsSensitivity: 0.2, 
+        buttons: [12, 14, 13, 15, 0, 1, 2, 3, 8],
+    },
+    {
+        // xbox 360 gamepad profile
+        axesSensitivity: 0.35,
+        axesPositive: [RIGHT,   DOWN,  RIGHT,  DOWN],
+        axesNegative: [LEFT,    UP,    LEFT,   UP],
+        buttonsSensitivity: 0.2, 
+        buttons: [A, B, X, Y, 0, 0, 0, 0, UP, LEFT, DOWN, RIGHT],
+    },
+    {
+        // xbox 360 gamepad profile
+        axesSensitivity: 0.35,
+        axesPositive: [RIGHT,   DOWN,  RIGHT,  DOWN],
+        axesNegative: [LEFT,    UP,    LEFT,   UP],
+        buttonsSensitivity: 0.2, 
+        buttons: [A, B, X, Y, L1, R1, L2, R2, MENU, START, 0, 0, UP, DOWN, LEFT, RIGHT],
+    },
 ]
 
 // cheating combos
@@ -107,26 +137,89 @@ const combos = {
 }
 
 function init() {
-    indexKeyActions()
+    bind = this
+    indexActions()
+}
+
+function indexPadActions() {
+    bind.padActionMaps = []
+    padActionIdMaps.forEach((padActionIdMap, padId) => {
+        const controllerId = GAMEPAD_CONTROLLERS_BASE + padId
+
+        const map = {
+            axesSensitivity: padActionIdMap.axesSensitivity,
+            buttonsSensitivity: padActionIdMap.buttonsSensitivity,
+        }
+
+        map.axesPositive = []
+        padActionIdMap.axesPositive.forEach((actionId, axisId) => {
+            const name = actionName(actionId)
+            if (name) {
+                map.axesPositive[axisId] = Object.freeze({
+                    id:           actionId,
+                    name:         name,
+                    pushable:     true,
+                    axisId:       axisId,
+                    controllerId: controllerId,
+                })
+            }
+        })
+
+        map.axesNegative = []
+        padActionIdMap.axesNegative.forEach((actionId, axisId) => {
+            const name = actionName(actionId)
+            if (name) {
+                map.axesNegative[axisId] = Object.freeze({
+                    id:           actionId,
+                    name:         name,
+                    pushable:     true,
+                    axisId:       axisId,
+                    controllerId: controllerId,
+                })
+            }
+        })
+
+        map.buttons = []
+        padActionIdMap.buttons.forEach((actionId, buttonId) => {
+            const name = actionName(actionId)
+            if (name) {
+                map.buttons[buttonId] = Object.freeze({
+                    id:           actionId,
+                    name:         name,
+                    pushable:     true,
+                    buttonId:     buttonId,
+                    controllerId: controllerId,
+                })
+            }
+        })
+
+        bind.padActionMaps[padId] = map
+    })
 }
 
 function indexKeyActions() {
+    bind.keyCodeActionMap = []
     for (let keyboardController = 0; keyboardController < keyboardControllersMapping.length; keyboardController++) {
         const keyActionMap = keyboardControllersMapping[keyboardController]
         for (let i = 0; i < keyActionMap.length; i++) {
-            const set = i / actions.length,
+            const layout = i / actions.length,    // 0 - main, 1 - alternative layout, 2 - 2nd alternative...
                   actionId = i % actions.length,
                   keyCode = keyActionMap[i]
             if (keyCode) {
-                keyCodeMap[keyCode] = Object.freeze({
+                bind.keyCodeActionMap[keyCode] = Object.freeze({
                     id:           actionId,
-                    set:          set,
+                    layout:       layout,
                     name:         actionName(actionId),
                     controllerId: KEYBOARD_CONTROLLERS_BASE + keyboardController,
                 })
             }
         }
     }
+}
+
+function indexActions() {
+    indexPadActions()
+    indexKeyActions()
 }
 
 function actionName(action) {

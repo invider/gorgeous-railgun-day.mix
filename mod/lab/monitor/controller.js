@@ -4,7 +4,6 @@
 
 // error messages
 const WRONG_CONTROLLER_ID = '[controller] controllerId is supposed to be a positive integer'
-const WRONG_ACTION        = '[controller] wrong action definition object'
 const WRONG_TARGET        = '[controller] target is supposed to be an object'
 
 const OFF = 0
@@ -13,6 +12,7 @@ const OFF = 0
 const ctrl = []
 
 const ctrlActionCache = []
+const ctrlActionPush  = []
 
 // targets are recepients of action events
 let targetMap = []
@@ -139,13 +139,84 @@ function target(controller) {
     return targetMap[icontroller]
 }
 
+// process controller push
+//
+// @param {object/action}
+// @param {object|number} - source value
+function push(action, dt, source) {
+    if (this.disabled) return // input MUST be filtered out by the active disabled flag
+    if (!action) throw '[controller] missing the action to push()!'
+
+    const actionId     = action.id
+    const controllerId = action.controllerId
+ 
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+
+    const icontroller = controllerId - 1
+
+    if (ctrl[icontroller]) {
+        if (ctrl[icontroller][actionId]) {
+            // continue action
+            ctrlActionPush[icontroller][actionId] = true
+            const target = targetMap[icontroller]
+            if (target) {
+                if (target.act && !target.disabled) {
+                    target.act(
+                        action,
+                        dt,
+                        env.realTime - ctrl[icontroller][actionId],
+                        source
+                    )
+                }
+            }
+
+        } else {
+            // actuate action
+            ctrl[icontroller][actionId] = env.realTime
+
+            if (!ctrlActionCache[icontroller]) {
+                ctrlActionCache[icontroller] = []
+            }
+            ctrlActionCache[icontroller][actionId] = action
+
+            if (!ctrlActionPush[icontroller]) {
+                ctrlActionPush[icontroller] = []
+            }
+            ctrlActionPush[icontroller][actionId] = true
+
+            const target = targetMap[icontroller]
+            if (target) {
+                if (target.actuate && !target.disabled) {
+                    target.actuate(action, source)
+                }
+            } else {
+                // no target binded, try to capture the controller
+                trap('capture', {
+                    action,
+                    dt,
+                    source,
+                })
+            }
+        }
+
+    }  else {
+        trap('capture', {
+            action,
+            dt,
+            source,
+        })
+    }
+
+    if (this.__.combo) this.__.combo.register(action)
+}
+
 // actuate or continue the controller action
 //
-// @param {number} action
-// @param {number/1+} controller
-function act(action, sourceEvent) {
-    if (this.disabled) return
-    if (!action) throw WRONG_ACTION
+// @param {object/action}
+// @param {object|number} - source value
+function act(action, source) {
+    if (this.disabled) return // input MUST be filtered out by the active disabled flag
+    if (!action) throw '[controller] missing the action to act()!'
 
     const actionId     = action.id
     const controllerId = action.controllerId
@@ -164,27 +235,33 @@ function act(action, sourceEvent) {
             const target = targetMap[icontroller]
             if (target) {
                 if (target.actuate && !target.disabled) {
-                    target.actuate(action, sourceEvent)
+                    target.actuate(action, source)
                 }
             } else {
                 // no target binded, try to capture the controller
-                trap('capture', controller)
+                trap('capture', {
+                    action,
+                    source,
+                })
             }
         }
     }  else {
-        trap('capture', action)
+        trap('capture', {
+            action,
+            source,
+        })
     }
 
-    if (this.__.combo) this.__.combo.register(action, controller)
+    if (this.__.combo) this.__.combo.register(action)
 }
 
 // stop the controller action
 //
 // @param {number} action
 // @param {number/1+} controller
-function cutOff(action, sourceEvent) {
-    if (this.disabled) return
-    if (!action) throw WRONG_ACTION
+function cutOff(action, source) {
+    if (this.disabled) return // input MUST be filtered out by the active disabled flag
+    if (!action) throw '[controller] missing the action to cutOff()!'
 
     const actionId     = action.id
     const controllerId = action.controllerId
@@ -205,17 +282,31 @@ function cutOff(action, sourceEvent) {
 }
 
 function evo(dt) {
-    for (let controller = 0; controller < ctrl.length; controller++) {
-        if (ctrl[controller]) {
-            for (let actionId = 0; actionId < ctrl[controller].length; actionId++) {
-                if (ctrl[controller][actionId]) {
-                    const target = targetMap[controller]
+    for (let icontroller = 0; icontroller < ctrl.length; icontroller++) {
+        if (ctrl[icontroller]) {
+            for (let actionId = 0; actionId < ctrl[icontroller].length; actionId++) {
+                if (ctrl[icontroller][actionId]) {
+                    const target = targetMap[icontroller]
+                    const action = ctrlActionCache[icontroller][actionId]
+                    const duration = env.realTime - ctrl[icontroller][actionId]
+
                     if (target && target.act && !target.disabled) {
                         target.act(
-                            ctrlActionCache[controller][actionId],
+                            action,
                             dt,
-                            env.realTime - ctrl[controller][actionId]
+                            duration
                         )
+                    }
+
+                    if (action.pushable) {
+                        if (ctrlActionPush[icontroller][actionId]) {
+                            ctrlActionPush[icontroller][actionId] = false
+                        } else {
+                            if (target && target.cutOff && !target.disabled) {
+                                target.cutOff(action, duration)
+                            }
+                            ctrl[icontroller][actionId] = OFF
+                        }
                     }
                 }
             }
