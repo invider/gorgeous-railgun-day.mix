@@ -67,25 +67,25 @@ class Outpost extends MultiPlatform {
     mountRailgun() {
         const { x, y, r } = this
         const R = r * 2.5,
-              dir = math.rndfi(),
-              dx  = cos(dir),
-              dy  = sin(dir),
-              mx  = x + dx * r,
-              my  = y + dy * r,
-              gx  = x + dx * R,
-              gy  = x + dy * R
+              dir   = math.rndfi(),
+              dx    = cos(dir),
+              dy    = sin(dir),
+              mtx    = x + dx * r,
+              mty    = y + dy * r,
+              gunX  = x + dx * R,
+              gunY  = x + dy * R
 
         const railguns = this._ls.filter(e => e instanceof dna.space.RailgunTurret).length
         const railgun = new dna.space.RailgunTurret({
             name: 'gun' + (railguns + 1),
             team: 2,
-            x: gx,
-            y: gy,
+            x: gunX,
+            y: gunY,
             dx: -dx,
             dy: -dy,
             mount: {
-                x: mx,
-                y: my,
+                x: mtx,
+                y: mty,
             }
         })
         this.attach(railgun)

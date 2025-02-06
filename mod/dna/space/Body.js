@@ -16,23 +16,25 @@ class Body extends LabFrame {
         }
     }
 
-    lxy(gx, gy) {
+    // get a set of body-local coordinates from the provided world/parent coordinates
+    lxy(px, py) {
         const cdir = -this.dir,
-              lx = gx - this.x,
-              ly = gy - this.y
+              lx = px - this.x,
+              ly = py - this.y
         return [
             lx * cos(cdir) - ly * sin(cdir),
             lx * sin(cdir) + ly * cos(cdir),
         ]
     }
 
-    gxy(lx, ly) {
+    // get a set of world/parent coordinates from the provided body-local coordinates
+    pxy(lx, ly) {
         const { x, y, dir } = this
-        const gx = lx * cos(dir) - ly * sin(dir),
-              gy = lx * sin(dir) + ly * cos(dir)
+        const px = lx * cos(dir) - ly * sin(dir),
+              py = lx * sin(dir) + ly * cos(dir)
         return [
-            x + gx,
-            y + gy,
+            x + px,
+            y + py,
         ]
     }
 

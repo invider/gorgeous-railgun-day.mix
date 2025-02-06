@@ -13,20 +13,21 @@ class Solid {
         }, st)
     }
 
-    lxy(gx, gy) {
-        const vec2 = this.__.lxy(gx, gy)
+    lxy(wx, wy) {
+        const vec2 = this.__.lxy(wx, wy)
+        // translate from body/parent coordinates to the local ones
         vec2[0] -= this.x
         vec2[1] -= this.y
         return vec2
     }
 
-    gxy(lx, ly) {
-        return this.__.gxy(lx + this.x, ly + this.y)
+    wxy(lx, ly) {
+        return this.__.pxy(lx + this.x, ly + this.y)
     }
 
     contact(hitter, hitterSolid, resolveContact) {
-        const gxy = hitterSolid.gxy(0, 0)
-        const lxy = this.lxy( gxy[0], gxy[1] )
+        const wxy = hitterSolid.wxy(0, 0)
+        const lxy = this.lxy( wxy[0], wxy[1] )
         const dist = math.length(lxy[0], lxy[1])
         if (dist <= this.r + hitterSolid.r) {
             resolveContact(
@@ -35,7 +36,7 @@ class Solid {
                 {
                     dist,
                     lxy,
-                    gxy,
+                    wxy,
                     info: `[${this.__.name}@${round(this.__.x)}:${round(this.__.y)}]`
                         + ` <=> [${hitterSolid.__.name}@${round(hitterSolid.__.x)}:${round(hitterSolid.__.y)}]`
                         + ` rel::${round(lxy[0])}:${round(lxy[1])}`,
