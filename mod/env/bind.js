@@ -186,6 +186,7 @@ function indexPadActions() {
                 map.buttons[buttonId] = Object.freeze({
                     id:           actionId,
                     name:         name,
+                    gamepad:      true,
                     pushable:     true,
                     buttonId:     buttonId,
                     controllerId: controllerId,
@@ -203,12 +204,13 @@ function indexKeyActions() {
         const keyActionMap = keyboardControllersMapping[keyboardController]
         for (let i = 0; i < keyActionMap.length; i++) {
             const layout = i / actions.length,    // 0 - main, 1 - alternative layout, 2 - 2nd alternative...
-                  actionId = i % actions.length,
+                  actionId = i % actions.length + 1,
                   keyCode = keyActionMap[i]
             if (keyCode) {
                 bind.keyCodeActionMap[keyCode] = Object.freeze({
                     id:           actionId,
                     layout:       layout,
+                    keyboard:     true,
                     name:         actionName(actionId),
                     controllerId: KEYBOARD_CONTROLLERS_BASE + keyboardController,
                 })

@@ -19,10 +19,14 @@ class SpacecraftPadControl {
 
         switch(action.name) {
             case 'A':
+                if (action.keyboard && __.primaryWeapon) {
+                    __.primaryWeapon.trigger()
+                }
+                break
             case 'B':
-                // TODO make into evolvable action to charge/animate and preserve the rate of fire
-                // imediate for now
-                if (__.primaryWeapon) __.primaryWeapon.trigger()
+                if (__.primaryWeapon) {
+                    __.primaryWeapon.trigger()
+                }
                 break
         }
     }
@@ -37,8 +41,15 @@ class SpacecraftPadControl {
             case 'RIGHT':
                 __.attitude.right(dt)
                 break
+            case 'A':
+                if (action.gamepad) {
+                    __.thruster.forward(dt)
+                }
+                break
             case 'UP':
-                __.thruster.forward(dt)
+                if (action.keyboard) {
+                    __.thruster.forward(dt)
+                }
                 break
             case 'DOWN':
                 __.thruster.backward(dt)
@@ -51,8 +62,14 @@ class SpacecraftPadControl {
 
         switch(action.name) {
             case 'A':
+                if (action.keyboard && __.primaryWeapon) {
+                    __.primaryWeapon.stop()
+                }
+                break
             case 'B':
-                if (__.primaryWeapon) __.primaryWeapon.stop()
+                if (__.primaryWeapon) {
+                    __.primaryWeapon.stop()
+                }
                 break
         }
     }
