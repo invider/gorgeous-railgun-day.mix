@@ -1,3 +1,4 @@
+const Dock = require('dna/space/Dock')
 const MultiPlatform = require('dna/space/MultiPlatform')
 
 class Outpost extends MultiPlatform {

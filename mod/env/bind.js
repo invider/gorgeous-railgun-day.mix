@@ -102,7 +102,7 @@ const padActionIdMaps = [
         axesPositive: [RIGHT,   DOWN,  RIGHT,  DOWN],
         axesNegative: [LEFT,    UP,    LEFT,   UP],
         buttonsSensitivity: 0.2, 
-        buttons: [A, B, X, Y, 0, 0, 0, 0, UP, LEFT, DOWN, RIGHT],
+        buttons: [A, B, X, Y, L1, R1, L2, R2, MENU, START, 0, 0, UP, DOWN, LEFT, RIGHT],
     },
     {
         // xbox 360 gamepad profile
@@ -110,7 +110,7 @@ const padActionIdMaps = [
         axesPositive: [12, 14, 12, 14],
         axesNegative: [13, 15, 13, 15],
         buttonsSensitivity: 0.2, 
-        buttons: [12, 14, 13, 15, 0, 1, 2, 3, 8],
+        buttons: [A, B, X, Y, L1, R1, L2, R2, MENU, START, 0, 0, UP, DOWN, LEFT, RIGHT],
     },
     {
         // xbox 360 gamepad profile
@@ -118,7 +118,7 @@ const padActionIdMaps = [
         axesPositive: [RIGHT,   DOWN,  RIGHT,  DOWN],
         axesNegative: [LEFT,    UP,    LEFT,   UP],
         buttonsSensitivity: 0.2, 
-        buttons: [A, B, X, Y, 0, 0, 0, 0, UP, LEFT, DOWN, RIGHT],
+        buttons: [A, B, X, Y, L1, R1, L2, R2, MENU, START, 0, 0, UP, DOWN, LEFT, RIGHT],
     },
     {
         // xbox 360 gamepad profile
