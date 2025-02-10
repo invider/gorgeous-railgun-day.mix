@@ -12,10 +12,12 @@ class GroupState {
 
     activate() {
         this.states.forEach(state => activateState(state))
+        this.deactivated = false
     }
 
     deactivate() {
         this.states.forEach(state => deactivateState(state))
+        this.deactivated = true
     }
 }
 
@@ -37,7 +39,7 @@ function include(state) {
 }
 
 function includeAll(states) {
-    if (!states || !isArray(states)) throw `Array of states is expected!`
+    if (!states || !isArray(states)) throw new Error(`Array of states is expected!`)
     states.forEach(state => include(state))
 }
 
@@ -54,6 +56,10 @@ function setup() {
     if (lab.state) lab.state._ls.forEach(state => {
         include(state)
     })
+}
+
+function isActive(state) {
+    return !state.deactivated
 }
 
 function deactivateState(state) {
@@ -84,20 +90,24 @@ function deactivateState(state) {
     }
 }
 
-function deactivateAllExcept(name) {
+function deactivateAllExcept(skipList, force) {
     stateList.forEach( state => {
-        if (state.name !== name) {
-            deactivateState(state)
+        if (!skipList.includes(state)) {
+            if (force || isActive(state)) {
+                deactivateState(state)
+            }
         }
     })
 }
 
 function deactivateAll() {
-    deactivateAllExcept('')
+    stateList.forEach( state => {
+        deactivateState(state)
+    })
 }
 
 function activateState(state) {
-    if (!state) throw `Missing state entity!`
+    if (!state) throw new Error(`Missing state entity!`)
 
     if (isFun(state.activate)) {
         state.activate()
@@ -124,60 +134,67 @@ function activateState(state) {
     }
 }
 
-function switchTo(target, force) {
-    const targetStates = [],
-          targetNames  = []
+function defineTarget(fuzzyTarget) {
+    const target = {
+        names:  [],
+        states: [],
+    }
 
     function addTarget(name, state) {
-        if (!name && !state) throw `Unknown annonymous state!`
+        if (!name && !state) throw new Error(`Unknown annonymous state!`)
 
         if (name && !state) {
             state = stateDir[name]
-            if (!state) throw `Can't switch to unknown state: [${name}]`
+            if (!state) throw new Error(`Unknown state: [${name}]`)
         }
 
-        targetStates.push(state)
-        if (name) targetNames.push(name)
+        target.states.push(state)
+        if (name) target.names.push(name)
     }
 
-    if (isString(target)) {
-        addTarget(target)
-    } else if (isArray(target)) {
-        target.forEach(subTarget => {
+    if (isString(fuzzyTarget)) {
+        addTarget(fuzzyTarget)
+    } else if (isArray(fuzzyTarget)) {
+        fuzzyTarget.forEach(subTarget => {
             if (isString(subTarget)) {
                 addTarget(subTarget)
             } else if (isObject(subTarget)) {
                 addTarget(subTarget.name, subTarget)
             } else {
-                throw `Can't switch - wrong state list entry: [${subTarget}]`
+                throw new Error(`Wrong sub-target listed - expecting a string or an object: [${subTarget}]`)
             }
         })
-    } else if (isObj(target)) {
-        addTarget(target.name, target)
+    } else if (isObj(fuzzyTarget)) {
+        addTarget(fuzzyTarget.name, fuzzyTarget)
     } else {
-        throw `Can't switch - wrong state entry: [${target}]`
+        throw new Error(`Wrong state entry - expecting a string, an array or an object: [${fuzzyTarget}]`)
     }
 
-    const name = targetNames.join(',')
-    if (name === env.state && !force) return // ignore request, we're already at this state
-
-    deactivateAll()
-
-    env.state = name
-    env.transition = 'none'
-    log(`=== state: ${name} ===`)
-    targetStates.forEach(state => activateState(state))
+    target.name = target.names.join(',')
+    return target
 }
 
-function transitTo(name, st) {
-    /*
-    const nextState = stateDir[name]
-    if (!nextState) {
-        throw `Can't transit to unknown state: [${name}]`
-    }
-    */
+function switchTo(fuzzyTarget, force) {
+    const target = defineTarget(fuzzyTarget)
+    if (target.name === env.state && !force) return // ignore, we're already at the target state
 
-    env.transition = env.state + ' -> ' + name
+    if (force) deactivateAll()
+    else deactivateAllExcept(target.states)
+
+    env.state = target.name
+    env.transition = 'none'
+    log(`=== state [${target.name}] ===`)
+    target.states.forEach(state => {
+        if (force || !isActive(state)) activateState(state)
+    })
+}
+
+function transitTo(fuzzyTarget, st, force) {
+    const target = defineTarget(fuzzyTarget)
+
+    if (env.state === target.name && !force) return // ignore, we're already at the target state
+
+    env.transition = env.state + ' -> ' + target.name
     log(`transiting ${env.transition}`)
 
     const ts = {
@@ -186,10 +203,26 @@ function transitTo(name, st) {
         fadeout: 2,
 
         onFadeOut: function() {
-            switchTo(name)
+            try {
+                switchTo(fuzzyTarget, force)
+            } catch(e) {
+                log.err(e)
+            }
             if (this.next) this.next()
         }
     }
     augment(ts, st)
     lab.vfx.transit(ts)
+}
+
+function forceTransitTo(fuzzyTarget, st) {
+    transitTo(fuzzyTarget, st, true)
+}
+
+function currentState() {
+    return env.state
+}
+
+function currentTransition() {
+    return env.transition
 }
