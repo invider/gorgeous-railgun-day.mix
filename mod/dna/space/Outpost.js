@@ -68,7 +68,7 @@ class Outpost extends MultiPlatform {
     mountRailgun() {
         const { x, y, r } = this
         const R = r * 2.5,
-              dir   = math.rndfi(),
+              dir   = math.rnda(),
               dx    = cos(dir),
               dy    = sin(dir),
               mtx    = x + dx * r,

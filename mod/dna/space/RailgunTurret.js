@@ -11,7 +11,7 @@ class RailgunTurret extends Platform {
             r2:      8,
 
             hull:    100,
-            dir:     math.rndfi(),
+            dir:     math.rnda(),
             scanned: true,
 
             // specs

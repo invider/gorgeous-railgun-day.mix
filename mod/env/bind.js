@@ -232,7 +232,7 @@ function actionId(name) {
     return actions.indexOf(name)
 }
 
-// *MUST* be run every time ```keyboardControllersMapping``` table changes
+// *MUST* be run every time *keyboardControllersMapping* table changes
 function onRemap() {
     indexKeyActions()
 }
