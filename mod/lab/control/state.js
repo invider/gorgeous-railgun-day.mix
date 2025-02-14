@@ -135,6 +135,7 @@ function isActive(state) {
 function deactivateState(state) {
     if (isFun(state.deactivate)) {
         // direct deactivation
+        state.deactivated = true
         state.deactivate()
     } else {
         // staged deactivation
@@ -190,6 +191,7 @@ function activateState(state) {
     if (!state) throw new Error(`Missing state entity!`)
 
     if (isFun(state.activate)) {
+        state.deactivated = false
         state.activate()
     } else {
         state.deactivated = false

@@ -1,22 +1,74 @@
-const df = {
-    x: 0,
-    y: 0,
-    w: 400,
-    h: 40,
-    step: 60,
-    border: 2,
-    shadowShift: 6,
-    IDLE_TIMEOUT: 20,
+/*
+ * Menu Widget
+ *
+ * Use as a separate screen or in combination with other widgets.
+ *
+ * Create with *items* array or use _selectFrom(st)_ to define the items and event hooks:
+ *
+ * ```
+ *  items: [
+ *      // simple items
+ *      'Simple Item',
+ *      'Another Simple Item',
+ *
+ *      // section item - visible, but not selectable
+ *      { section: true, title: 'Section One'},
+ *      // switch item
+ *      ['from', 'list', 'selection'],
+ *
+ *      // another section
+ *      { section: true, title: 'Another Section'},
+ *      // option item
+ *      {
+ *          option: true,
+ *          title: 'music',
+ *          options: ['on', 'off', 'random'],
+ *          sync: function() {
+ *              console.dir(this)
+ *              log('syncing music to: ' + this.options[this.current])
+ *          },
+ *      },
+ *      // complex section
+ *      { section: true, title: 'Complex Section'},
+ *      // complex item
+ *      {
+ *          title: 'Complex Item',
+ *          onSelect: function() {
+ *              log('complex item is selected!')
+ *          },
+ *      },
+ *      // complex hidden item
+ *      {
+ *          hidden: true,
+ *          title: 'Hidden Item',
+ *      },
+ *      // complex disabled item
+ *      {
+ *          disabled: true,
+ *          title: 'A Disabled Item',
+ *      },
+ *      'The Last Item',
+ *
+ *  ],
+ * ```
+ */
 
-    current:  0,
-    hidden:   true,
-    paused:   true,
-    disabled: true,
-    
-    showBackground: false,
-    showBackline:   false,
+// check if the item is just a plain string
+function isSimpleItem(item) {
+    return isStr(item)
+}
 
-    debug:          false,
+// check if the item is not a simple one
+function isComplexItem(item) {
+    return isObj(item)
+}
+
+function isSection(item) {
+    return (isComplexItem(item) && item.section)
+}
+
+function isOption(item) {
+    return (isComplexItem(item) && item.option)
 }
 
 // check if the item is a switch represented by an array
@@ -24,15 +76,31 @@ function isSwitch(item) {
     return isArray(item)
 }
 
-function isOption(item) {
-    return (isObj(item) && item.option)
-}
 
 class Menu {
 
     constructor(st) {
         this.syncTheme()
-        extend(this, df, st)
+        extend(this, {
+            x: 0,
+            y: 0,
+            w: 400,
+            h: 40,
+            step: 60,
+            border: 2,
+            shadowShift: 6,
+            IDLE_TIMEOUT: 20,
+
+            current:  0,
+            hidden:   true,
+            paused:   true,
+            disabled: true,
+            
+            showBackground: false,
+            showBackline:   false,
+
+            debug:          false,
+        }, st)
         this.trap = {}
     }
 
@@ -60,21 +128,29 @@ class Menu {
     show() {
         this.adjust()
         this.hidden = false
-        this.paused = false
-        this.disabled = false
         this.lastTouch = Date.now()
 
-        lab.control.controller.saveAll()
-        lab.control.controller.bindAll(this)
+        lab.monitor.controller.saveTargetMap()
+        this._capture = true
+        lab.monitor.controller.bindAll(this)
         if (this.trap.onShow) this.trap.onShow()
     }
 
     hide() {
         this.hidden = true
-        this.paused = true
-        this.disabled = true
-        lab.control.controller.restoreAll()
+        if (this._capture) {
+            lab.monitor.controller.restoreTargetMap()
+            this._capture = false
+        }
         if (this.trap.onHide) this.trap.onHide()
+    }
+
+    itemTitle(item) {
+        if (isSimpleItem(item)) return item
+        if (isSwitch(item)) return item[item.current || 0]
+        if (isOption(item)) return item.options[item.current || 0]
+        if (isComplexItem(item)) return item.title
+        return ''
     }
 
     // select from items provided in st object
@@ -119,8 +195,8 @@ class Menu {
             this.next()
         } else {
             // landed
-            if (this.onMove) this.onMove(item)
-            lib.sfx('select')
+            if (this.trap.onMove) this.trap.onMove(item)
+            //lib.sfx('select')
         }
     }
 
@@ -134,8 +210,8 @@ class Menu {
             this.prev()
         } else {
             // landed
-            if (this.onMove) this.onMove(item)
-            lib.sfx('select')
+            if (this.trap.onMove) this.trap.onMove(item)
+            //lib.sfx('select')
         }
     }
 
@@ -143,37 +219,41 @@ class Menu {
         if (this.hidden) return
         const item = this.currentItem()
         if (isSwitch(item)) {
+            if (!item.current) item.current = 0
             item.current --
             if (item.current < 0) item.current = item.length - 1
-            if (this.onSwitch) this.onSwitch(item, this.current)
-            lib.sfx('apply')
+            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
+            //lib.sfx('apply')
         } else if (isOption(item)) {
+            if (!item.current) item.current = 0
             item.current --
             if (item.current < 0) item.current = item.options.length - 1
-            if (this.onSwitch) this.onSwitch(item, this.current)
+            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
             if (item.sync) item.sync()
-            lib.sfx('apply')
+            //lib.sfx('apply')
         }
-        if (this.onMove) this.onMove(item)
+        if (this.trap.onMove) this.trap.onMove(item)
     }
 
     right() {
         if (this.hidden) return
         const item = this.currentItem()
         if (isSwitch(item)) {
+            if (!item.current) item.current = 0
             item.current ++
             if (item.current >= item.length) item.current = 0
-            if (this.onSwitch) this.onSwitch(item, this.current)
+            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
 
-            lib.sfx('apply')
+            //lib.sfx('apply')
         } else if (isOption(item)) {
+            if (!item.current) item.current = 0
             item.current ++
             if (item.current >= item.options.length) item.current = 0
-            if (this.onSwitch) this.onSwitch(item, this.current)
+            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
             if (item.sync) item.sync()
-            lib.sfx('apply')
+            //lib.sfx('apply')
         }
-        if (this.onMove) this.onMove(item)
+        if (this.trap.onMove) this.trap.onMove(item)
     }
 
     select() {
@@ -182,9 +262,14 @@ class Menu {
             this.right()
         } else {
             if (this.trap.onSelect) {
-                this.trap.onSelect(item, this.current)
-                lib.sfx('use')
+                this.trap.onSelect(item, this.current, this)
             }
+            if (item.select) {
+                item.select(this)
+            } else if (this.trap.select) {
+                this.trap.select(item, this.current, this)
+            }
+            //lib.sfx('use')
         }
     }
 
@@ -192,18 +277,18 @@ class Menu {
         if (this.onBack) {
             this.onBack( this.currentItem() )
         }
-        lib.sfx('back')
+        //lib.sfx('back')
     }
 
-    activate(action) {
+    actuate(action) {
         this.lastTouch = Date.now()
-        switch(action) {
-            case env.bind.UP:    this.prev();   break;
-            case env.bind.LEFT:  this.left();   break;
-            case env.bind.DOWN:  this.next();   break;
-            case env.bind.RIGHT: this.right();  break;
-            case env.bind.FIRE:  this.select(); break;
-            case env.bind.ALT:   this.back();   break;
+        switch(action.name) {
+            case "UP":    this.prev();   break;
+            case "LEFT":  this.left();   break;
+            case "DOWN":  this.next();   break;
+            case "RIGHT": this.right();  break;
+            case "A":     this.select(); break;
+            case "B":     this.back();   break;
         }
     }
 
@@ -249,16 +334,18 @@ class Menu {
             let active = true
             let disabled = false
             let item = this.items[i]
-            if (isArray(item)) {
+            if (isSwitch(item)) {
                 if (item.hidden) hidden = true
                 if (item.disabled) disabled = true
-                item = '< ' + item[item.current] + ' >'
-            } else if (isObj(item)) {
+                item = '< ' + item[item.current || 0] + ' >'
+            } else if (isComplexItem(item)) {
                 if (item.section) {
                     active = false
                     item = item.title
                 } else if (item.option) {
-                    item = item.title + ': ' + item.options[item.current]
+                    item = item.title + ': ' + item.options[item.current || 0]
+                } else {
+                    item = item.title
                 }
             }
 

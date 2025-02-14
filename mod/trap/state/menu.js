@@ -1,3 +1,3 @@
 function menu() {
-    lab.control.transitTo('menu')
+    lab.control.state.transitTo('menu')
 }

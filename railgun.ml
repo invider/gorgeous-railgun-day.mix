@@ -1,4 +1,5 @@
 # wave 1
+> merge Menu features from Space Boy Trouble prototype
 > camera area zoom-in
 > ship navigation (waypoints)
 > ship attacks 

@@ -1,3 +1,3 @@
 function title() {
-    lab.control.transitTo('title')
+    lab.control.state.transitTo('title')
 }

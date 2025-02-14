@@ -24,7 +24,7 @@ const targetMapStack = []
 // @param {number/1+} controllerId
 // @param {object} target - a target object to bind to the controller
 function bind(controllerId, target) {
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
     if (!target || !isObj(target)) throw WRONG_TARGET
 
     release(controllerId)
@@ -40,7 +40,7 @@ function bind(controllerId, target) {
 //
 // @param {number/1+} controllerId
 function cutOffAllActions(controllerId) {
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
 
     const icontroller = controllerId - 1
     const target = targetMap[icontroller]
@@ -59,7 +59,7 @@ function cutOffAllActions(controllerId) {
 // @param {number/1+} controllerId
 // @returns {boolean} - true if the target was found, false otherwise
 function release(controllerId) {
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
 
     const icontroller = controllerId - 1
     const target = targetMap[icontroller]
@@ -79,8 +79,8 @@ function release(controllerId) {
 function bindAll(target) {
     if (!target || !isObj(target)) throw WRONG_TARGET
 
-    for (let i = 0; i < env.bind.MAX_CONTROLLERS; i++) {
-        bind(i, target)
+    for (let icontroller = 0; icontroller < env.bind.MAX_CONTROLLERS; icontroller++) {
+        bind(icontroller + 1, target)
     }
 }
 
@@ -150,7 +150,7 @@ function push(action, dt, source) {
     const actionId     = action.id
     const controllerId = action.controllerId
  
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
 
     const icontroller = controllerId - 1
 
@@ -220,7 +220,7 @@ function act(action, source) {
 
     const actionId     = action.id
     const controllerId = action.controllerId
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
 
     const icontroller = controllerId - 1
 
@@ -265,7 +265,7 @@ function cutOff(action, source) {
 
     const actionId     = action.id
     const controllerId = action.controllerId
-    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw WRONG_CONTROLLER_ID
+    if (!controllerId || !isNumber(controllerId) || controllerId < 1) throw new Error(WRONG_CONTROLLER_ID)
 
     const icontroller = controllerId - 1
 

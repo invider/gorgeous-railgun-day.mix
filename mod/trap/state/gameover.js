@@ -1,3 +1,3 @@
 function gameover() {
-    lab.control.transitTo('gameover')
+    lab.control.state.transitTo('gameover')
 }
