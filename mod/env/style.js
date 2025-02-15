@@ -1,4 +1,5 @@
 const style = {
+
     color: {
         title: hsl(.62, .7, .7),
     },
@@ -7,6 +8,10 @@ const style = {
         main: {
             family: 'pixel-operator',
             size:   24,
+        },
+        menu: {
+            family: 'pixel-operator',
+            size:   32,
         },
         title: {
             family: 'pixel-operator',
@@ -59,20 +64,29 @@ const style = {
         }
     },
 
+    normalizeStyle: function() {
+        const style = this
+
+        // classify fonts
+        for (let id in style.font) {
+            const font = style.font[id]
+            font.id = id
+            font.head = font.size + 'px ' + font.family
+        }
+
+        // catalog teams
+        style.team = {}
+        style.teams.forEach((team, i) => {
+            team.id = i
+            style.team[team.name] = team
+        })
+    },
+
+    onUpdate: function() {
+        this.normalizeStyle()
+    }
 };
 
 (function setupStyles() {
-    // classify fonts
-    for (let id in style.font) {
-        const font = style.font[id]
-        font.id = id
-        font.head = font.size + 'px ' + font.family
-    }
-
-    // catalog teams
-    style.team = {}
-    style.teams.forEach((team, i) => {
-        team.id = i
-        style.team[team.name] = team
-    })
+    style.onUpdate()
 })()

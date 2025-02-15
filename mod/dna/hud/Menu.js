@@ -20,8 +20,7 @@
  *      { section: true, title: 'Another Section'},
  *      // option item
  *      {
- *          option: true,
- *          title: 'music',
+ *          title: 'music', // optional title
  *          options: ['on', 'off', 'random'],
  *          sync: function() {
  *              console.dir(this)
@@ -53,22 +52,21 @@
  * ```
  */
 
+const defaultColorTheme = {
+    main:        '#f2c157',
+    selected:    '#e35730',
+    deactivated: '#808080',
+    disabled:    '#ffff80',
+
+    background:  '#404040',
+    shadow:      '#00000080',
+    backline:    '#606060',
+    activeBackline: '#808080',
+}
+
 // check if the item is just a plain string
 function isSimpleItem(item) {
     return isStr(item)
-}
-
-// check if the item is not a simple one
-function isComplexItem(item) {
-    return isObj(item)
-}
-
-function isSection(item) {
-    return (isComplexItem(item) && item.section)
-}
-
-function isOption(item) {
-    return (isComplexItem(item) && item.option)
 }
 
 // check if the item is a switch represented by an array
@@ -76,12 +74,24 @@ function isSwitch(item) {
     return isArray(item)
 }
 
+// check if the item is not a simple one
+function isComplexItem(item) {
+    return ( isObj(item) && !isSwitch(item) )
+}
 
-class Menu {
+function isSection(item) {
+    return ( isComplexItem(item) && item.section )
+}
+
+function isOption(item) {
+    return ( isComplexItem(item) && isArr(item.options) )
+}
+
+
+class Menu extends sys.Frame {
 
     constructor(st) {
-        this.syncTheme()
-        extend(this, {
+        super( extend({
             x: 0,
             y: 0,
             w: 400,
@@ -91,31 +101,33 @@ class Menu {
             shadowShift: 6,
             IDLE_TIMEOUT: 20,
 
+            OPTION_PREFIX: '< ',
+            OPTION_SUFIX:  ' >',
+
+            color: defaultColorTheme,
+
             current:  0,
             hidden:   true,
             paused:   true,
             disabled: true,
-            
+
             showBackground: false,
             showBackline:   false,
 
+            trap:           {},
+            menuStack:      [],
+
             debug:          false,
-        }, st)
-        this.trap = {}
+        }, st) )
+    }
+
+    init() {
+        if (this.trap) this.setTrap(this.trap)
+        if (this.items) this.selectFrom(this.items)
     }
 
     syncTheme() {
-        this.color = {
-            main:        '#f2c157',
-            selected:    '#e35730',
-            deactivated: '#808080',
-            disabled:    '#ffff80',
-
-            background:  '#404040',
-            shadow:      '#00000080',
-            backline:    '#606060',
-            activeBackline: '#808080',
-        }
+        this.color = defaultColorTheme
     }
 
     adjust() {
@@ -126,6 +138,8 @@ class Menu {
     }
 
     show() {
+        if (!this.items) throw new Error('[menu] Unable to open the menu - no menu items are specified')
+
         this.adjust()
         this.hidden = false
         this.lastTouch = Date.now()
@@ -133,7 +147,14 @@ class Menu {
         lab.monitor.controller.saveTargetMap()
         this._capture = true
         lab.monitor.controller.bindAll(this)
-        if (this.trap.onShow) this.trap.onShow()
+        if (this.items.preservePos) {
+            this.slideToNextActiveItem()
+        } else {
+            this.setCurrent(0)
+        }
+        if (isFun(this.trap.onShow)) this.trap.onShow()
+        if (isFun(this.items.onShow)) this.items.onShow()
+        this.notifyOnShow()
     }
 
     hide() {
@@ -142,7 +163,9 @@ class Menu {
             lab.monitor.controller.restoreTargetMap()
             this._capture = false
         }
-        if (this.trap.onHide) this.trap.onHide()
+        this.notifyOnHide()
+        if (isFun(this.items.onHide)) this.items.onHide()
+        if (isFun(this.trap.onHide)) this.trap.onHide()
     }
 
     itemTitle(item) {
@@ -153,27 +176,95 @@ class Menu {
         return ''
     }
 
+    normalizeItems() {
+        const __ = this
+        this.items.__ = __
+        this.items.forEach(item => {
+            if (isComplexItem(item) || isSwitch(item)) {
+                item.__ = __
+            }
+            if (isSwitch(item) || isOption(item)) {
+                if (!item.current) item.current = 0
+            }
+        })
+    }
+
+    notifyOnShow() {
+        this.items.forEach(item => {
+            if (isComplexItem(item) || isSwitch(item)) {
+                if (isFun(item.onShow)) item.onShow()
+            }
+        })
+    }
+
+    notifyOnHide() {
+        this.items.forEach(item => {
+            if (isComplexItem(item) || isSwitch(item)) {
+                if (isFun(item.onHide)) item.onHide()
+            }
+        })
+    }
+
+    setItems(items) {
+        if (!items) return
+
+        this.items = items
+        this.normalizeItems()
+
+        this.setCurrent(0)
+    }
+
+    setTrap(trap) {
+        if (!trap) return
+
+        this.trap = trap
+        this.trap.__ = this
+    }
+
+    currentItem() {
+        return this.items[this.current]
+    }
+
+    setCurrent(current) {
+        this.current = current
+        this.slideToNextActiveItem()
+    }
+
     // select from items provided in st object
     // The st object can contains items array and traps object.
     // Traps handle events like onSelect and onIdle.
-    // @param preservePos the selector's position is not changed when set to true
-    selectFrom(items, trap, preservePos) {
-        this.items = items
-        if (trap) {
-            this.trap = trap
-            this.trap.__ = this
+    selectFrom(items, trap) {
+        this.setItems(items)
+        this.setTrap(trap)
+
+        if (this.deactivated) {
+            this.activate()
+        } else {
+            this.notifyOnShow()
         }
-        if (preservePos) this.current = 0
+    }
 
-        this.items.forEach(item => {
-            if (isSwitch(item) || isOption(item)) {
-                if (!item.current) item.current = 0
-                if (item.load) item.load()
-            }
-        })
+    subSelectFrom(items) {
+        this.items.current = this.current
+        this.notifyOnHide()
+        this.menuStack.push(this.items)
+        this.setItems(items)
+        this.notifyOnShow()
+    }
 
-        this.slideToNextActiveItem()
-        this.show()
+    returnBack(restorePos) {
+        if (this.menuStack.length === 0) throw new Error('[menu] No submenu found to return to!')
+
+        this.items.current = this.current
+        this.notifyOnHide()
+
+        const prevItems = this.menuStack.pop()
+        this.setItems(prevItems)
+        this.notifyOnShow()
+
+        if (restorePos && prevItems.current) {
+            this.setCurrent(prevItems.current)
+        }
     }
 
     slideToNextActiveItem() {
@@ -181,7 +272,7 @@ class Menu {
         if (isObj(item) && item.section) {
             this.current ++
             if (this.current >= this.items.length) this.current = 0
-            this.slideToActiveItem()
+            this.slideToNextActiveItem()
         }
     }
 
@@ -222,13 +313,15 @@ class Menu {
             if (!item.current) item.current = 0
             item.current --
             if (item.current < 0) item.current = item.length - 1
-            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
+            if (isFun(this.items.onSwitch)) this.items.onSwitch(item, this.current)
+            if (isFun(this.trap.onSwitch)) this.trap.onSwitch(item, this.current)
             //lib.sfx('apply')
         } else if (isOption(item)) {
             if (!item.current) item.current = 0
             item.current --
             if (item.current < 0) item.current = item.options.length - 1
-            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
+            if (isFun(this.items.onSwitch)) this.items.onSwitch(item, this.current)
+            if (isFun(this.trap.onSwitch)) this.trap.onSwitch(item, this.current)
             if (item.sync) item.sync()
             //lib.sfx('apply')
         }
@@ -242,18 +335,24 @@ class Menu {
             if (!item.current) item.current = 0
             item.current ++
             if (item.current >= item.length) item.current = 0
-            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
+
+            if (isFun(item.sync)) item.sync(item.current)
+            if (isFun(this.items.onSwitch)) this.items.onSwitch(item, this.current)
+            if (isFun(this.trap.onSwitch)) this.trap.onSwitch(item, this.current)
 
             //lib.sfx('apply')
         } else if (isOption(item)) {
             if (!item.current) item.current = 0
             item.current ++
             if (item.current >= item.options.length) item.current = 0
-            if (this.trap.onSwitch) this.trap.onSwitch(item, this.current, this)
-            if (item.sync) item.sync()
+
+            if (isFun(item.sync)) item.sync(item.current)
+            if (isFun(this.items.onSwitch)) this.items.onSwitch(item, this.current)
+            if (isFun(this.trap.onSwitch)) this.trap.onSwitch(item, this.current)
             //lib.sfx('apply')
         }
-        if (this.trap.onMove) this.trap.onMove(item)
+        if (isFun(this.items.onMove)) this.items.onMove(item, this.current)
+        if (isFun(this.trap.onMove)) this.trap.onMove(item, this.current)
     }
 
     select() {
@@ -261,14 +360,19 @@ class Menu {
         if (isSwitch(item) || isOption(item)) {
             this.right()
         } else {
-            if (this.trap.onSelect) {
-                this.trap.onSelect(item, this.current, this)
-            }
-            if (item.select) {
+            if (isFun(item.select)) {
                 item.select(this)
-            } else if (this.trap.select) {
-                this.trap.select(item, this.current, this)
+            } else if (item.submenu) {
+                // open a submenu
+                const items = this._dir[item.submenu]
+                if (items) this.subSelectFrom(items)
+            } else if (isFun(this.items.select)) {
+                this.items.select(item, this.current)
+            } else if (isFun(this.trap.select)) {
+                this.trap.select(item, this.current)
             }
+            if (isFun(this.items.onSelect)) this.items.onSelect(item, this.current)
+            if (isFun(this.trap.onSelect)) this.trap.onSelect(item, this.current)
             //lib.sfx('use')
         }
     }
@@ -292,9 +396,9 @@ class Menu {
         }
     }
 
-    focusOn(name) {
-        const i = this.items.indexOf(name)
-        if (i >= 0) this.current = i
+    focusOn(target) {
+        const i = isNum(target)? target : this.items.indexOf(target)
+        this.setCurrent(i)
     }
 
     drawDebug() {
@@ -302,76 +406,6 @@ class Menu {
         stroke('#ffff00')
         rect(this.x - this.w/2, this.y - this.h/2, this.w, this.h)
         lib.draw.cross(this.x, this.y, 20)
-    }
-
-    draw() {
-        if (!this.items) return // nothing to show!
-
-        if (env.debug && this.debug) this.drawDebug()
-
-        const n = this.items.length
-        const cx = this.x
-        const cy = this.y - floor(this.h/2)
-
-        alignCenter()
-        baseTop()
-        font(env.style.menuFont)
-
-        const b = this.border
-        const x = cx
-        const rw = this.w
-        const rx = floor(this.x - rw/2)
-        const h = n * this.step + 2*b
-        let y = cy
-
-        if (this.showBackground) {
-            fill(this.color.background)
-            rect(rx, y-h/2, rw, h)
-        }
-
-        for (let i = 0; i < n; i++) {
-            let hidden = false
-            let active = true
-            let disabled = false
-            let item = this.items[i]
-            if (isSwitch(item)) {
-                if (item.hidden) hidden = true
-                if (item.disabled) disabled = true
-                item = '< ' + item[item.current || 0] + ' >'
-            } else if (isComplexItem(item)) {
-                if (item.section) {
-                    active = false
-                    item = item.title
-                } else if (item.option) {
-                    item = item.title + ': ' + item.options[item.current || 0]
-                } else {
-                    item = item.title
-                }
-            }
-
-            if (!hidden) {
-                if (this.showBackline) {
-                    if (i === this.current) fill(this.color.activeBackline)
-                    else fill(this.color.backline)
-                    rect(rx+b, y-1, rw-2*b, this.step-2)
-                }
-
-
-                fill(this.color.shadow)
-                text(item, x + this.shadowShift, y + this.shadowShift)
-
-                if (!active) fill(this.color.deactivated)
-                else if (disabled) fill(this.color.disabled)
-                else if (i === this.current) fill(this.color.selected)
-                else fill(this.color.main)
-                text(item, x, y)
-                y += this.step
-            }
-        }
-    }
-
-    currentItem() {
-        return this.items[this.current]
     }
 
     activeItems() {
@@ -397,11 +431,87 @@ class Menu {
         }
     }
 
+    draw() {
+        if (!this.items) return // nothing to show!
+
+        if (env.debug && this.debug) this.drawDebug()
+
+        const n = this.items.length
+        const cx = this.x
+        const cy = this.y - floor(this.h/2)
+
+        alignCenter()
+        baseTop()
+        font(env.style.font.menu.head)
+
+        const b = this.border
+        const x = cx
+        const rw = this.w
+        const rx = floor(this.x - rw/2)
+        const h = n * this.step + 2*b
+        let y = cy
+
+        if (this.showBackground) {
+            fill(this.color.background)
+            rect(rx, y-h/2, rw, h)
+        }
+
+        for (let i = 0; i < n; i++) {
+            const item = this.items[i],
+                  hidden = item? !!item.hidden : false,
+                  disabled = item? !!item.disabled : false
+            let title,
+                active = true
+
+            if (isSimpleItem(item)) {
+                title = item
+            } else if (isSwitch(item)) {
+                title = this.OPTION_PREFIX + item[item.current || 0] + this.OPTION_SUFIX
+            } else if (isComplexItem(item)) {
+                if (item.section) {
+                    active = false
+                    title = item.title
+                } else if (isOption(item)) {
+                    title = this.OPTION_PREFIX + (item.title? item.title + ': ' : '')
+                        + item.options[item.current || 0] + this.OPTION_SUFIX
+                } else {
+                    title = item.title
+                }
+            } else {
+                title = '[empty title]'
+            }
+
+            if (!hidden) {
+                if (this.showBackline) {
+                    if (i === this.current) fill(this.color.activeBackline)
+                    else fill(this.color.backline)
+                    rect(rx+b, y-1, rw-2*b, this.step-2)
+                }
+
+
+                fill(this.color.shadow)
+                text(title, x + this.shadowShift, y + this.shadowShift)
+
+                if (!active) fill(this.color.deactivated)
+                else if (disabled) fill(this.color.disabled)
+                else if (i === this.current) fill(this.color.selected)
+                else fill(this.color.main)
+                text(title, x, y)
+                y += this.step
+            }
+        }
+    }
+
     evo(dt) {
         const idle = (Date.now() - this.lastTouch)/1000
-        if (this.trap.onIdle && idle >= this.IDLE_TIMEOUT) {
-            this.trap.onIdle()
+        if (idle >= this.IDLE_TIMEOUT) {
             this.lastTouch = Date.now()
+            if (isFun(this.items.onIdle)) {
+                this.items.onIdle()
+            }
+            if (isFun(this.trap.onIdle)) {
+                this.trap.onIdle()
+            }
         }
     }
 }
