@@ -102,7 +102,7 @@ function evo(dt) {
 }
 
 function drawBackground() {
-    blocky();
+    pixelated();
     if (this.transition.image) {
         image(this.transition.image, 0, 0,
             this.__.rx(1), this.__.ry(1))
